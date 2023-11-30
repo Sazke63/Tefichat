@@ -13,7 +13,6 @@
     <Folder Include="Services\EventAgs\" />
     <Folder Include="ViewModels\" />
     <Folder Include="Views\Controls\" />
-    <Folder Include="Views\Style\Window\" />
     <Folder Include="Views\Template\" />
   </ItemGroup>
 

@@ -38,7 +38,6 @@ namespace Tefichat.ViewModels
             if (!string.IsNullOrEmpty(codeVerify))
             {
                 await _telegramService.Authorization(codeVerify);
-
                 //MessageBox.Show(_telegramService.Status);
             }
         }

@@ -8,7 +8,10 @@ namespace Tefichat.Services
 {
     public interface ITelegramService
     {
+        event EventHandler<EventArgs> Login;
+
         bool HasLogin { get; }
+        Task CheckLogin();
         Task Authorization(string loginInfo);
     }
 }

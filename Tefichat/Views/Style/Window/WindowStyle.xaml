@@ -6,6 +6,8 @@
         <Setter Property="WindowStyle" Value="None"/>
         <Setter Property="AllowsTransparency" Value="True"/>
         <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="MinHeight" Value="300"/>
+        <Setter Property="MinWidth" Value="400"/>
         <Setter Property="WindowChrome.WindowChrome">
             <Setter.Value>
                 <WindowChrome NonClientFrameEdges="None"
@@ -20,12 +22,12 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type Window}">
-                    <Border x:Name="PART_Container" Padding="0" Background="Black">
+                    <Border x:Name="PART_Container" Padding="0" Background="#17212b">
                         <Border.Effect>
                             <DropShadowEffect Color="Black" Opacity="0.4" BlurRadius="10" ShadowDepth="0" Direction="0"/>
                         </Border.Effect>
 
-                        <Border x:Name="PART_Border" Background="Transparent" BorderBrush="#242f3d" BorderThickness="0">
+                        <Border x:Name="PART_Border" Background="Transparent" BorderBrush="#17212b" BorderThickness="0">
                             <Grid x:Name="PART_Content">
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="24"/>

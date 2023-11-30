@@ -1,8 +1,7 @@
 ﻿<Application x:Class="Tefichat.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:Tefichat"
-             StartupUri="Views/MainWindow.xaml">
+             xmlns:local="clr-namespace:Tefichat">
     
     <Application.Resources>
         <ResourceDictionary>
@@ -10,6 +9,13 @@
                 <ResourceDictionary Source="./Views/Style/Window/WindowStyle.xaml"/>
                 <ResourceDictionary Source="./Views/Style/Window/Buttons.xaml"/>
                 <ResourceDictionary Source="./Views/Style/ScrollBarStyle.xaml"/>
+                <ResourceDictionary Source="./Views/Style/DialogCard.xaml"/>
+                <ResourceDictionary Source="./Views/Style/MessageBox.xaml"/>
+                <ResourceDictionary Source="./Views/Style/ChatSelect.xaml"/>
+                <ResourceDictionary Source="./Views/Style/SearchBox.xaml"/>
+                <ResourceDictionary Source="./Views/Style/ChatItem.xaml"/>
+                <ResourceDictionary Source="./Views/Template/DialogData.xaml"/>
+                <ResourceDictionary Source="./Views/Template/MessagesData.xaml"/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>

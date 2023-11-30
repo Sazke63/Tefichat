@@ -1,0 +1,76 @@
+﻿<UserControl x:Class="Tefichat.Views.Controls.Main"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+             xmlns:views="clr-namespace:Tefichat.Views.Controls"
+              d:DesignHeight="576"
+              d:DesignWidth="800"
+              mc:Ignorable="d">
+
+    <Grid Background="#17212b">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" MinWidth="260" MaxWidth="420"/>
+            <ColumnDefinition Width="1"/>
+            <ColumnDefinition Width="1.5*" />
+        </Grid.ColumnDefinitions>
+
+        <Grid Grid.Column="0" Background="#17212b">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="53"/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+
+            <Grid Grid.Row="0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="56"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <Button Grid.Column="0" Name="Menu" Background="#17212b" BorderThickness="0" Margin="10" Click="Menu_Click">
+                    <!--Image Source="../Images/menu_icon.png" Margin="5"/-->
+                </Button>
+
+                <TextBox Grid.Column="1" Style="{StaticResource SearchBox}" Margin="0,9,10,9"/>
+
+            </Grid>
+
+            <!--ItemContainerStyle="{StaticResource DialogCard}"-->
+            <ListBox Grid.Row="1" x:Name="listBoxContacts" ItemsSource="{Binding SearchCollectionViewSource}"
+                     Background="Transparent" Foreground="WhiteSmoke" FontSize="14" 
+                     BorderThickness="0" SelectedItem="{Binding SelectedDialog}"
+                     ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                     ItemTemplate="{DynamicResource DialogDataTemplate}"
+                     ScrollViewer.VerticalScrollBarVisibility="Auto"
+                     ItemContainerStyle="{DynamicResource DialogCard}"
+                     IsSynchronizedWithCurrentItem="True">
+
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="SelectionChanged">
+                        <i:InvokeCommandAction Command="{Binding GetMessagesCommand}"/>
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+            </ListBox>
+
+        </Grid>
+
+        <GridSplitter Grid.Column="1" ShowsPreview="False" HorizontalAlignment="Center" VerticalAlignment="Stretch" Background="#17212b" Width="1"/>
+
+        <Grid Grid.Column="2" Background="#0e1621">
+
+            <ContentControl Content="{Binding}" Style="{StaticResource ChatSelectStyle}"/>
+            <!--views:Chat/-->
+            <Border CornerRadius="18" Background="#17212b" 
+                Width="230" Height="28" Margin="0,1,0,5">
+
+                <TextBlock Text="Выберите чат чтобы начать общение"
+                   FontSize="12" Foreground="WhiteSmoke"
+                   HorizontalAlignment="Center"
+                   VerticalAlignment="Center"/>
+            </Border>
+
+        </Grid>
+    </Grid>
+
+</UserControl>

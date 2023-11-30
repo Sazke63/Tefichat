@@ -1,7 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Security.Principal;
+using System.Security.RightsManagement;
 using System.Threading.Tasks;
 using System.Windows;
+using Tefichat.Models;
 using TL;
 using WTelegram;
 
@@ -17,6 +20,7 @@ namespace Tefichat.Services
 
         // Data
         private User meAccount;
+        private Messages_Dialogs data = null;
 
         //
         public event EventHandler<EventArgs> Login;
@@ -35,7 +39,7 @@ namespace Tefichat.Services
         {
             if (!string.IsNullOrEmpty(phoneNumber))
             {
-                await Authorization("7" + phoneNumber);
+                await Authorization(phoneNumber);
             }
         }
 
@@ -67,6 +71,35 @@ namespace Tefichat.Services
             }              
         }
 
+        // Получение списка Диалогов
+        public async Task<List<DialogModel>> GetAllDialogs()
+        {
+            List<DialogModel> dialogs = new List<DialogModel>();
+            data = await telegramClient.Messages_GetAllDialogs();
 
+            foreach (var dialog in data.dialogs)
+            {
+                switch (data.UserOrChat(dialog))
+                {
+                    case TL.User user when user.IsActive:
+                        {
+                            dialogs.Add(new DialogModel((TL.Dialog)dialog)); //, new ContactUser(user, null)));
+                            break;
+                        }
+                    case TL.Chat chat when chat.IsActive:
+                        {
+                            dialogs.Add(new DialogModel((TL.Dialog)dialog)); //, new ContactChat(chat)));
+                            break;
+                        }
+                    case TL.Channel channel when channel.IsActive:
+                        {
+                            dialogs.Add(new DialogModel((TL.Dialog)dialog)); //, new ContactChannel(channel)));
+                            break;
+                        }
+                }
+            }
+
+            return dialogs;
+        }
     }
 }

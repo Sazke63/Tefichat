@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Tefichat.Models;
+using TL;
 
 namespace Tefichat.Services
 {
@@ -13,5 +15,6 @@ namespace Tefichat.Services
         bool HasLogin { get; }
         Task CheckLogin();
         Task Authorization(string loginInfo);
+        Task<List<DialogModel>> GetAllDialogs();
     }
 }

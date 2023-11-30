@@ -27,9 +27,9 @@ namespace Tefichat.ViewModels
 
         public ICommand SendCodeCommand { get; set; }
 
-        public SendCodeVM(ITelegramService telegramService)
+        public SendCodeVM()
         {
-            _telegramService = telegramService;
+            _telegramService = TelegramService.GetInstance();
             SendCodeCommand = new RelayCommand(async (o) => await SendCode(o));
         }
 
@@ -38,7 +38,6 @@ namespace Tefichat.ViewModels
             if (!string.IsNullOrEmpty(codeVerify))
             {
                 await _telegramService.Authorization(codeVerify);
-                //MessageBox.Show(_telegramService.Status);
             }
         }
     }

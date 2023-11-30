@@ -25,9 +25,9 @@ namespace Tefichat.ViewModels
 
         public ICommand LoginCommand { get; set; }
 
-        public LoginPhoneVM(ITelegramService telegramService)
+        public LoginPhoneVM()
         {
-            _telegramService = telegramService;
+            _telegramService = TelegramService.GetInstance();
             LoginCommand = new RelayCommand(async (o) => await Login(o));
         }
 

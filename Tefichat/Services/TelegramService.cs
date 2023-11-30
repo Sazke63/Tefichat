@@ -9,9 +9,10 @@ namespace Tefichat.Services
 {
     public class TelegramService : ITelegramService
     {
+        private static readonly TelegramService telegramService = new TelegramService();
         private readonly string api_hash = "664bff894d30f72a263cd927928c4bfb";
         private readonly int api_id = 29217125;
-        private Client telegramClient;
+        private readonly Client telegramClient;
         private string phoneNumber;
 
         // Data
@@ -27,6 +28,8 @@ namespace Tefichat.Services
             phoneNumber = Properties.Settings.Default.PhoneNumber;
             telegramClient = new Client(api_id, api_hash);
         }
+
+        public static TelegramService GetInstance() => telegramService;
 
         public async Task CheckLogin()
         {
@@ -50,7 +53,10 @@ namespace Tefichat.Services
                 }
 
                 if (loginInfo.Length == 11 && phoneNumber == "")
+                {
                     Properties.Settings.Default.PhoneNumber = loginInfo;
+                    Properties.Settings.Default.Save();
+                }
 
                 Login.Invoke(this, new EventArgs());
 
@@ -60,5 +66,7 @@ namespace Tefichat.Services
                 MessageBox.Show(ex.Message);
             }              
         }
+
+
     }
 }

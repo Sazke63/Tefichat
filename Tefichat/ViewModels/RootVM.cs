@@ -20,11 +20,11 @@ namespace Tefichat.ViewModels
 
         public RootVM()
         {
-            _telegramService = new TelegramService();
+            _telegramService = TelegramService.GetInstance();
             _telegramService.CheckLogin();
             if (!_telegramService.HasLogin)
             {
-                CurrentVM = new LoginPhoneVM(_telegramService);
+                CurrentVM = new LoginPhoneVM();
             }
             else
                 CurrentVM = new MainVM();
@@ -37,7 +37,7 @@ namespace Tefichat.ViewModels
             if (_telegramService.HasLogin)
                 CurrentVM = new MainVM();
             else
-                CurrentVM = new SendCodeVM(_telegramService);
+                CurrentVM = new SendCodeVM();
         }
     }
 }

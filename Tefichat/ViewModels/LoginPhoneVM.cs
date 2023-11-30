@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Tefichat.ViewModels
 {
-    class LoginPhoneVM : ObservableObject
+    public class LoginPhoneVM : ObservableObject
     {
         private ITelegramService _telegramService;
 
@@ -23,17 +23,6 @@ namespace Tefichat.ViewModels
             }
         }
 
-        private string? codeVerify;
-        public string? CodeVerify
-        {
-            get => codeVerify;
-            set
-            {
-                codeVerify = value;
-                OnPropertyChanged("CodeVerify");
-            }
-        }
-
         public ICommand LoginCommand { get; set; }
 
         public LoginPhoneVM(ITelegramService telegramService)
@@ -48,15 +37,9 @@ namespace Tefichat.ViewModels
             {
                 await _telegramService.Authorization("7" + phoneNumber);
 
-                    //await DownloadData();
-                    //IsLoginVisible = false;
-                    //IsHomeVisible = true;
-
                 if (_telegramService.HasLogin)
                 {
 
-                    //IsLoginVisible = false;
-                    //IsSendCodeVisible = true;
                 }
                 //Properties.Settings.Default.PhoneNumber = phoneNumber;
             }

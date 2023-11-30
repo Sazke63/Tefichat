@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Tefichat.Services
 {
-    interface ITelegramService
+    public interface ITelegramService
     {
         bool HasLogin { get; }
         Task Authorization(string loginInfo);

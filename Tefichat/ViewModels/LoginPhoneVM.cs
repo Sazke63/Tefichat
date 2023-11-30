@@ -36,12 +36,6 @@ namespace Tefichat.ViewModels
             if (!string.IsNullOrEmpty(phoneNumber) && phoneNumber.Length <= 10)
             {
                 await _telegramService.Authorization("7" + phoneNumber);
-
-                if (_telegramService.HasLogin)
-                {
-
-                }
-                //Properties.Settings.Default.PhoneNumber = phoneNumber;
             }
         }
     }

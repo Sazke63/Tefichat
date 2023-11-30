@@ -1,5 +1,9 @@
 ﻿using System;
+using System.Security.Principal;
 using System.Threading.Tasks;
+using System.Windows;
+using TL;
+using WTelegram;
 
 namespace Tefichat.Services
 {
@@ -7,8 +11,11 @@ namespace Tefichat.Services
     {
         private readonly string api_hash = "664bff894d30f72a263cd927928c4bfb";
         private readonly int api_id = 29217125;
-
+        private Client telegramClient;
         private string phoneNumber;
+
+        // Data
+        private User meAccount;
 
         //
         public event EventHandler<EventArgs> Login;
@@ -18,6 +25,7 @@ namespace Tefichat.Services
         public TelegramService()
         {
             phoneNumber = Properties.Settings.Default.PhoneNumber;
+            telegramClient = new Client(api_id, api_hash);
         }
 
         public async Task CheckLogin()
@@ -28,20 +36,29 @@ namespace Tefichat.Services
             }
         }
 
+        // Авторизацию по номеру и коду
         public async Task Authorization(string loginInfo)
         {
-            //HasLogin = false;
-            if (loginInfo.Length == 11 && phoneNumber == "")
+            try
             {
-                Properties.Settings.Default.PhoneNumber = loginInfo;
+                string what = await telegramClient.Login(loginInfo);
+
+                if (what == null) 
+                {
+                    HasLogin = true;
+                    meAccount = telegramClient.User;
+                }
+
+                if (loginInfo.Length == 11 && phoneNumber == "")
+                    Properties.Settings.Default.PhoneNumber = loginInfo;
+
                 Login.Invoke(this, new EventArgs());
+
             }
-                
-            if (loginInfo.Length == 5)
+            catch(Exception ex)
             {
-                HasLogin = true;               
-                Login.Invoke(this, new EventArgs());
-            }               
+                MessageBox.Show(ex.Message);
+            }              
         }
     }
 }

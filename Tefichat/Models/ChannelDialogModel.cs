@@ -6,6 +6,7 @@ namespace Tefichat.Models
 {
     public class ChannelDialogModel : ChatBaseDialogModel
     {
+        public long AccessHash { get; set; }
         public string Name
         {
             get => title;
@@ -50,6 +51,7 @@ namespace Tefichat.Models
 
         public ChannelDialogModel(Dialog dialog, Channel channel) : base(dialog, channel)
         {
+            AccessHash = channel.access_hash;
             ParticipantsCount = channel.participants_count;
             date = channel.date;
             participants_count = channel.participants_count;

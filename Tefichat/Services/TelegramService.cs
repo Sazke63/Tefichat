@@ -119,5 +119,25 @@ namespace Tefichat.Services
                 return new MessageModel(new Message { id = 666 });
             }).Where(m => m.ID != 666).ToList();
         }
+
+        // Отправка сообщения
+        public async Task<bool> SendMessage(DialogModel dialog, string text)
+        {
+            InputPeer inputPeer = GetInputPeer(dialog);
+            var answer = await telegramClient.SendMessageAsync(inputPeer, text);
+            return answer.ID != 0;
+        }
+
+        // Получение InputPeer
+        private InputPeer GetInputPeer(DialogModel dialog)
+        {
+            switch (dialog)
+            {
+                case UserDialogModel user: return new InputPeerUser(dialog.Peer.ID, user.AccessHash);
+                case ChatDialogModel chat: return new InputPeerChat(dialog.Peer.ID);
+                case ChannelDialogModel channel: return new InputPeerChannel(dialog.Peer.ID, channel.AccessHash);
+            }
+            return null;
+        }
     }
 }

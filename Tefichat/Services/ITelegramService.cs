@@ -17,5 +17,6 @@ namespace Tefichat.Services
         Task Authorization(string loginInfo);
         Task<List<DialogModel>> GetAllDialogs();
         Task<List<MessageModel>> GetLastMessages();
+        Task<bool> SendMessage(DialogModel dialog, string text);
     }
 }

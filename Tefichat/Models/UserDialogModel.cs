@@ -11,6 +11,7 @@ namespace Tefichat.Models
     {
         public bool IsActive { get; set; }
         public string Name { get; set; }
+        public long AccessHash { get; set; }
 
         private byte[] _photo;
         public byte[] Photo
@@ -27,6 +28,7 @@ namespace Tefichat.Models
        {
             IsActive = user.IsActive;
             Name = user.first_name;
+            AccessHash = user.access_hash;
        }
     }
 }

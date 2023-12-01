@@ -18,7 +18,7 @@
         <Border Background="#17212b">
             <Grid HorizontalAlignment="Stretch" Margin="10">
 
-                <Label Content="{Binding SelectedDialog.Contact.Name}"
+                <Label Content="{Binding SelectedDialog.Name}"
                            VerticalAlignment="Center"
                            Foreground="WhiteSmoke"
                            FontWeight="Bold"
@@ -30,7 +30,7 @@
         <Grid Grid.Row="1">
 
             <!--ItemContainerStyle="{DynamicResource ChatItem}"-->
-            <ListBox Grid.Column="0" ItemsSource="{Binding SelectedDialog.Contact.Messages}"
+            <ListBox Grid.Column="0" ItemsSource="{Binding SelectedDialog.Messages}"
                  SelectedItem="{Binding SelectMessage, Mode=TwoWay}"
                  ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                  ItemTemplate="{DynamicResource MessagesDataTemplate}"

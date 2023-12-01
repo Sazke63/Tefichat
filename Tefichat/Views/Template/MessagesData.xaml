@@ -50,7 +50,7 @@
                         <ListBox ItemsSource="{Binding Photos}" Background="Transparent"
                                  ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                                  ScrollViewer.VerticalScrollBarVisibility="Disabled"
-                                 ItemContainerStyle="{StaticResource PhotoItem}"
+                                 
                                  BorderThickness="0"
                                  Margin="-1,-1,-1,-1"
                                  Visibility="Collapsed">

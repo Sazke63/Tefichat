@@ -14,7 +14,19 @@ namespace Tefichat.ViewModels
     public class MainVM : ObservableObject
     {
         private ITelegramService _telegramService;
-        public bool IsVisibleChat = false;
+
+        // Видимость окна чата
+        private bool isChatVisible = false;
+        public bool IsChatVisible
+        {
+            get => isChatVisible;
+            set
+            {
+                isChatVisible = value;
+                OnPropertyChanged(nameof(IsChatVisible));
+            }
+        }
+
         public ObservableCollection<DialogModel> Dialogs { get; set; }
 
         private DialogModel selectedDialog;
@@ -34,20 +46,19 @@ namespace Tefichat.ViewModels
         {
             _telegramService = TelegramService.GetInstance();
             Dialogs = new ObservableCollection<DialogModel>();
-            DownloadData();
+            GetMessagesCommand = new RelayCommand(async(o) => await GetLastMessages(o));
         }
 
         public async Task DownloadData()
         {
-            //List<DialogModel> dlgs = new List<DialogModel>();
             var dlgs = await _telegramService.GetAllDialogs();
             if (dlgs != null)
                 dlgs.ForEach(c => Dialogs.Add(c));
         }
 
-        private async Task GetLastMessages()
+        private async Task GetLastMessages(object o)
         {
-            if (!IsVisibleChat) IsVisibleChat = true;
+            if (!IsChatVisible) IsChatVisible = true;
             //var messages = await _telegramService.GetLastMessages();
 
             //if (messages != null)

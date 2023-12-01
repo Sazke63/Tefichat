@@ -13,6 +13,8 @@
         <DataTemplate x:Key="ChatTemplate">
             <views:Chat/>
         </DataTemplate>
+
+        <BooleanToVisibilityConverter x:Key="BoolToVisChat"/>
     </UserControl.Resources>
 
     <Grid Background="#17212b">
@@ -75,7 +77,7 @@
                    VerticalAlignment="Center"/>
             </Border>
 
-            <ContentControl ContentTemplate="{StaticResource ChatTemplate}" Visibility="{Binding IsVisibleChat}"/>
+            <ContentControl ContentTemplate="{StaticResource ChatTemplate}" Visibility="{Binding IsChatVisible, Converter={StaticResource BoolToVisChat}}"/>
 
         </Grid>
     </Grid>

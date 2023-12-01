@@ -1,4 +1,5 @@
-﻿using Tefichat.Base;
+﻿using System.Threading.Tasks;
+using Tefichat.Base;
 using Tefichat.Services;
 
 namespace Tefichat.ViewModels
@@ -21,15 +22,23 @@ namespace Tefichat.ViewModels
         public RootVM()
         {
             _telegramService = TelegramService.GetInstance();
-            _telegramService.CheckLogin();
+            _telegramService.Login += _telegramService_Login;
+        }
+
+        public async Task Start()
+        {
+            await _telegramService.CheckLogin();
+
             if (!_telegramService.HasLogin)
             {
                 CurrentVM = new LoginPhoneVM();
             }
             else
-                CurrentVM = new MainVM();
-
-            _telegramService.Login += _telegramService_Login;
+            {
+                MainVM mainVM = new MainVM();
+                await mainVM.DownloadData();
+                CurrentVM = mainVM;
+            } 
         }
 
         private void _telegramService_Login(object? sender, System.EventArgs e)

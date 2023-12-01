@@ -13,6 +13,7 @@ namespace Tefichat
         {
             base.OnStartup(e);
             RootVM rootVM = new RootVM();
+            rootVM.Start();
             MainWindow mainWindow = new MainWindow() { DataContext = rootVM };
             mainWindow.Show();
         }

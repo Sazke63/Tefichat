@@ -2,7 +2,7 @@
                     xmlns:emoji="clr-namespace:Emoji.Wpf;assembly=Emoji.Wpf"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
-    <DataTemplate x:Key="DialogDataTemplate">
+    <DataTemplate DataType="{x:Type ListBoxItem}" x:Key="DialogDataTemplate">
 
         <Grid Background="Transparent" Margin="0,7,0,7">
             <Grid.ColumnDefinitions>

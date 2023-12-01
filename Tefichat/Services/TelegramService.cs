@@ -96,7 +96,7 @@ namespace Tefichat.Services
                             return new ChannelDialogModel((TL.Dialog)d, channel);
                         }
                 }
-                return new DialogModel((TL.Dialog)d);
+                return new DialogModel(new TL.Dialog());
             }).Where(d => d.Peer != null).ToList();
 
             //foreach (var dialog in data.dialogs)

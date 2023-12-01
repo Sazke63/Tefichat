@@ -1,10 +1,13 @@
-﻿using System;
+﻿using Stfu.Linq;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Security.Principal;
 using System.Security.RightsManagement;
 using System.Threading.Tasks;
 using System.Windows;
 using Tefichat.Models;
+using Tefichat.Views.Controls;
 using TL;
 using WTelegram;
 
@@ -20,7 +23,7 @@ namespace Tefichat.Services
 
         // Data
         private User meAccount;
-        private Messages_Dialogs data = null;
+        private Messages_Dialogs data;
 
         //
         public event EventHandler<EventArgs> Login;
@@ -74,32 +77,51 @@ namespace Tefichat.Services
         // Получение списка Диалогов
         public async Task<List<DialogModel>> GetAllDialogs()
         {
-            List<DialogModel> dialogs = new List<DialogModel>();
+            //List<DialogModel> dialogs = new List<DialogModel>();
             data = await telegramClient.Messages_GetAllDialogs();
-
-            foreach (var dialog in data.dialogs)
+            return data.dialogs.AsParallel().Select(d =>
             {
-                switch (data.UserOrChat(dialog))
+                switch (data.UserOrChat(d))
                 {
                     case TL.User user when user.IsActive:
                         {
-                            dialogs.Add(new DialogModel((TL.Dialog)dialog)); //, new ContactUser(user, null)));
-                            break;
+                            return new UserDialogModel((TL.Dialog)d, user);
                         }
                     case TL.Chat chat when chat.IsActive:
                         {
-                            dialogs.Add(new DialogModel((TL.Dialog)dialog)); //, new ContactChat(chat)));
-                            break;
+                            return new ChatDialogModel((TL.Dialog)d, chat);
                         }
                     case TL.Channel channel when channel.IsActive:
                         {
-                            dialogs.Add(new DialogModel((TL.Dialog)dialog)); //, new ContactChannel(channel)));
-                            break;
+                            return new ChannelDialogModel((TL.Dialog)d, channel);
                         }
                 }
-            }
+                return new DialogModel((TL.Dialog)d);
+            }).Where(d => d.Peer != null).ToList();
 
-            return dialogs;
+            //foreach (var dialog in data.dialogs)
+            //{
+            //    switch (data.UserOrChat(dialog))
+            //    {
+            //        case TL.User user when user.IsActive:
+            //            {
+            //                dialogs.Add(new DialogModel((TL.Dialog)dialog)); //, new ContactUser(user, null)));
+            //                break;
+            //            }
+            //        case TL.Chat chat when chat.IsActive:
+            //            {
+            //                dialogs.Add(new DialogModel((TL.Dialog)dialog)); //, new ContactChat(chat)));
+            //                break;
+            //            }
+            //        case TL.Channel channel when channel.IsActive:
+            //            {
+            //                dialogs.Add(new DialogModel((TL.Dialog)dialog)); //, new ContactChannel(channel)));
+            //                break;
+            //            }
+            //    }
+            //}
+
+            //return dialogs;
         }
     }
 }

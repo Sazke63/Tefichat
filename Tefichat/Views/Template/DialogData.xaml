@@ -12,7 +12,7 @@
             </Grid.ColumnDefinitions>
 
             <!--Logo-->
-            <Grid Grid.Column="0" Margin="8,0,12,0" HorizontalAlignment="Left">
+            <Grid Grid.Column="0" Margin="8,0,12,0" HorizontalAlignment="Left" Visibility="Collapsed">
 
                 <Border x:Name="IconDialog"
                         Height="46" Width="46"
@@ -28,7 +28,7 @@
 
                 <Ellipse x:Name="PhotoDialog" Width="46" Height="46" HorizontalAlignment="Left">
                     <Ellipse.Fill>
-                        <ImageBrush ImageSource="{Binding Contact.Photo}"/>
+                        <ImageBrush ImageSource="{Binding Photo}"/>
                     </Ellipse.Fill>
                 </Ellipse>
             </Grid>
@@ -43,7 +43,7 @@
                 <!--Name Chat-->
                 <Grid Grid.Row="0">
 
-                    <TextBlock Grid.Column="0" Text="{Binding Contact.Name}" 
+                    <TextBlock Grid.Column="0" Text="{Binding Name}" 
                                HorizontalAlignment="Stretch"
                                Foreground="WhiteSmoke"
                                Margin="0,4,20,0"
@@ -52,7 +52,7 @@
                 </Grid>
 
                 <Grid Grid.Row="1">
-                    <emoji:TextBlock Grid.Row="1" Text="{Binding Contact.LastMessage.Message, Mode=TwoWay}"
+                    <emoji:TextBlock Grid.Row="1" Text="{Binding LastMessage.Message, Mode=TwoWay}"
                                FontSize="13" Foreground="Gray"
                                HorizontalAlignment="Left"
                                Margin="0,0,0,0" Height="20"/>
@@ -66,7 +66,7 @@
                     <RowDefinition/>
                 </Grid.RowDefinitions>
 
-                <TextBlock Grid.Row="0" Text="{Binding Contact.LastMessage.Date, StringFormat={}{0:t},ConverterCulture={}, Mode=TwoWay}"
+                <TextBlock Grid.Row="0" Text="{Binding LastMessage.Date, StringFormat={}{0:t},ConverterCulture={}, Mode=TwoWay}"
                                Foreground="DarkGray"
                                HorizontalAlignment="Right"
 
@@ -92,7 +92,7 @@
         </Grid>
 
         <DataTemplate.Triggers>
-            <DataTrigger Binding="{Binding Contact.Photo}" Value="{x:Null}">
+            <DataTrigger Binding="{Binding Photo}" Value="{x:Null}">
                 <Setter TargetName="PhotoDialog" Property="Visibility" Value="Collapsed"/>
                 <Setter TargetName="IconDialog" Property="Visibility" Value="Visible"/>
             </DataTrigger>

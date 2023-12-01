@@ -19,12 +19,13 @@ namespace Tefichat.ViewModels
         {
             _telegramService = TelegramService.GetInstance();
             Dialogs = new ObservableCollection<DialogModel>();
+            DownloadData();
         }
 
         public async Task DownloadData()
         {
-            List<DialogModel> dlgs = new List<DialogModel>();
-            dlgs = await _telegramService.GetAllDialogs();
+            //List<DialogModel> dlgs = new List<DialogModel>();
+            var dlgs = await _telegramService.GetAllDialogs();
             if (dlgs != null)
                 dlgs.ForEach(c => Dialogs.Add(c));
         }

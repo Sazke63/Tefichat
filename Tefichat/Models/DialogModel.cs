@@ -8,22 +8,8 @@ using TL;
 
 namespace Tefichat.Models
 {
-    public class DialogModel : ObservableObject
+    public class DialogModel : DialogBaseModel
     {
-        public Peer Peer { get; }
-
-        private int _topMessage;
-        public int TopMessage
-        {
-            get => _topMessage;
-            set
-            {
-                _topMessage = value;
-                OnPropertyChanged(nameof(TopMessage));
-            }
-        }
-
-        public int Top_message { get; set; }
         public int Read_inbox_max_id { get; set; }
         public int Read_outbox_max_id { get; set; }
         public int Unread_mentions_count { get; set; }
@@ -47,11 +33,9 @@ namespace Tefichat.Models
             }
         }
 
-        public DialogModel(Dialog dialog) //, Contact contact)
+        public DialogModel(Dialog dialog) : base(dialog.peer, dialog.top_message)
         {
             //Contact = contact;
-            Peer = dialog.Peer;
-            _topMessage = dialog.top_message;
             Read_inbox_max_id = dialog.read_inbox_max_id;
             Read_outbox_max_id = dialog.read_outbox_max_id;
             _unread_count = dialog.unread_count;

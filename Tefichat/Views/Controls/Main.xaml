@@ -37,7 +37,7 @@
             </Grid>
 
             <!--ItemContainerStyle="{StaticResource DialogCard}"-->
-            <ListBox Grid.Row="1" x:Name="listBoxContacts" ItemsSource="{Binding SearchCollectionViewSource}"
+            <ListBox Grid.Row="1" x:Name="listBoxContacts" ItemsSource="{Binding Dialogs}"
                      Background="Transparent" Foreground="WhiteSmoke" FontSize="14" 
                      BorderThickness="0" SelectedItem="{Binding SelectedDialog}"
                      ScrollViewer.HorizontalScrollBarVisibility="Disabled"

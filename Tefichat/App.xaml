@@ -11,7 +11,6 @@
                 <ResourceDictionary Source="./Views/Style/ScrollBarStyle.xaml"/>
                 <ResourceDictionary Source="./Views/Style/DialogCard.xaml"/>
                 <ResourceDictionary Source="./Views/Style/MessageBox.xaml"/>
-                <ResourceDictionary Source="./Views/Style/ChatSelect.xaml"/>
                 <ResourceDictionary Source="./Views/Style/SearchBox.xaml"/>
                 <ResourceDictionary Source="./Views/Style/ChatItem.xaml"/>
                 <ResourceDictionary Source="./Views/Template/DialogData.xaml"/>

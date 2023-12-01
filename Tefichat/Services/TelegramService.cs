@@ -77,8 +77,8 @@ namespace Tefichat.Services
         // Получение списка Диалогов
         public async Task<List<DialogModel>> GetAllDialogs()
         {
-            //List<DialogModel> dialogs = new List<DialogModel>();
             data = await telegramClient.Messages_GetAllDialogs();
+
             return data.dialogs.AsParallel().Select(d =>
             {
                 switch (data.UserOrChat(d))
@@ -98,30 +98,26 @@ namespace Tefichat.Services
                 }
                 return new DialogModel(new TL.Dialog());
             }).Where(d => d.Peer != null).ToList();
+        }
 
-            //foreach (var dialog in data.dialogs)
-            //{
-            //    switch (data.UserOrChat(dialog))
-            //    {
-            //        case TL.User user when user.IsActive:
-            //            {
-            //                dialogs.Add(new DialogModel((TL.Dialog)dialog)); //, new ContactUser(user, null)));
-            //                break;
-            //            }
-            //        case TL.Chat chat when chat.IsActive:
-            //            {
-            //                dialogs.Add(new DialogModel((TL.Dialog)dialog)); //, new ContactChat(chat)));
-            //                break;
-            //            }
-            //        case TL.Channel channel when channel.IsActive:
-            //            {
-            //                dialogs.Add(new DialogModel((TL.Dialog)dialog)); //, new ContactChannel(channel)));
-            //                break;
-            //            }
-            //    }
-            //}
-
-            //return dialogs;
+        // Получение последнего сообщения всех чатов
+        public async Task<List<MessageModel>> GetLastMessages()
+        {
+            return data.Messages.AsParallel().Select(m =>
+            {
+                if (m is TL.Message msg)
+                {
+                    if (meAccount != null && msg.from_id != null && msg.from_id.ID == meAccount.ID)
+                        return new MessageModel(msg, isOriginNative: true);
+                    else
+                        return new MessageModel(msg);
+                }
+                else if (m is TL.MessageService ms)
+                {
+                    return new MessageModel(ms);
+                }
+                return new MessageModel(new Message { id = 666 });
+            }).Where(m => m.ID != 666).ToList();
         }
     }
 }

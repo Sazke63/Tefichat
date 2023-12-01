@@ -54,25 +54,27 @@ namespace Tefichat.ViewModels
             var dlgs = await _telegramService.GetAllDialogs();
             if (dlgs != null)
                 dlgs.ForEach(c => Dialogs.Add(c));
+            await GetLastMessages(this);
         }
 
         private async Task GetLastMessages(object o)
         {
             if (!IsChatVisible) IsChatVisible = true;
-            //var messages = await _telegramService.GetLastMessages();
 
-            //if (messages != null)
-            //{
-            //    Dialogs.AsParallel().ForAll(d =>
-            //    {
-            //        var mes = messages.SingleOrDefault(m => m.Peer.ID == d.Peer.ID);
-            //        if (mes != null)
-            //        {
-            //            d.Contact.Messages.Add(mes); //new TelMessage(mes));
-            //            d.Contact.LastMessage = mes; //new TelMessage(mes);
-            //        }
-            //    });
-            //}
+            var messages = await _telegramService.GetLastMessages();
+
+            if (messages != null)
+            {
+                Dialogs.AsParallel().ForAll(d =>
+                {
+                    var mes = messages.SingleOrDefault(m => m.Peer.ID == d.Peer.ID);
+                    if (mes != null)
+                    {
+                        d.Messages.Add(mes);
+                        d.LastMessage = mes;
+                    }
+                });
+            }
 
             //Dialogs.AsParallel().ForAll(d =>
             //{

@@ -25,4 +25,5 @@
     <Grid>
         <ContentPresenter Content="{Binding CurrentVM}"/>
     </Grid>
+
 </Window>

@@ -18,5 +18,6 @@ namespace Tefichat.Services
         Task<List<DialogModel>> GetAllDialogs();
         Task<List<MessageModel>> GetLastMessages();
         Task<bool> SendMessage(DialogModel dialog, string text);
+        Task<List<MessageModel>> GetMessagesHistoryDialog(DialogModel dialog, int offset_id = 0, int add_offset = 0, int count = 20, bool mode = false);
     }
 }

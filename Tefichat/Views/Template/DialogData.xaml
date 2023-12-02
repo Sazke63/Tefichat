@@ -6,7 +6,7 @@
 
         <Grid Background="Transparent" Margin="0,7,0,7">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="70"/>
+                <ColumnDefinition Width="20"/>
                 <ColumnDefinition/>
                 <ColumnDefinition Width="50"/>
             </Grid.ColumnDefinitions>

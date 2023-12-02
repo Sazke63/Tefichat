@@ -1,6 +1,7 @@
 ﻿using Stfu.Linq;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Security.Principal;
 using System.Security.RightsManagement;
@@ -21,11 +22,11 @@ namespace Tefichat.Services
         private readonly Client telegramClient;
         private string phoneNumber;
 
-        // Data
+        // Данные
         private User meAccount;
         private Messages_Dialogs data;
 
-        //
+        // Оповещения
         public event EventHandler<EventArgs> Login;
 
         public bool HasLogin { get; set; } = false;
@@ -74,7 +75,7 @@ namespace Tefichat.Services
             }              
         }
 
-        // Получение списка Диалогов
+        // Загрузка списка Диалогов
         public async Task<List<DialogModel>> GetAllDialogs()
         {
             data = await telegramClient.Messages_GetAllDialogs();
@@ -100,7 +101,7 @@ namespace Tefichat.Services
             }).Where(d => d.Peer != null).ToList();
         }
 
-        // Получение последнего сообщения всех чатов
+        // Загрузка последнего сообщения всех чатов
         public async Task<List<MessageModel>> GetLastMessages()
         {
             return data.Messages.AsParallel().Select(m =>
@@ -126,6 +127,72 @@ namespace Tefichat.Services
             InputPeer inputPeer = GetInputPeer(dialog);
             var answer = await telegramClient.SendMessageAsync(inputPeer, text);
             return answer.ID != 0;
+        }
+
+        // Загрузка истории чата
+        public async Task<List<MessageModel>> GetMessagesHistoryDialog(DialogModel dialog, int offset_id = 0, int add_offset = 0, int count = 20, bool mode = false)
+        {
+            if (dialog == null) return null;
+
+            List<MessageModel> messages = new List<MessageModel>();
+            TL.InputPeer inputPeer = GetInputPeer(dialog);
+            var limit = count > 100 ? 100 : count;
+            MessageModel message = null;
+            bool NoFoundGroup = false;
+
+            for (; ; ) //int offset_id = 0
+            {
+                var mes = await telegramClient.Messages_GetHistory(inputPeer, offset_id, add_offset: add_offset, limit: limit);
+
+                if (mes.Messages.Length == 0) break;
+
+                foreach (var msgBase in mes.Messages)
+                {
+                    if (msgBase is Message msg)
+                    {
+                        if (msg.grouped_id != 0)
+                        {
+                            var groupMes = messages.SingleOrDefault(m => m.Grouped_id == msg.grouped_id);
+                            if (groupMes != null)
+                            {
+                                //groupMes.Photos.Insert(0, new PictureModel(msg.ID, msg.grouped_id, null, msg.media));
+                                if (msg.message != "")
+                                    groupMes.Message = msg.message;
+                            }
+                            else
+                            {
+                                NoFoundGroup = true;
+                            }
+                        }
+
+                        if (msg.grouped_id == 0 || NoFoundGroup)
+                        {
+                            message = new MessageModel(msg);
+                            //if (msg.media != null)
+                            //    message.Photos.Add(new PictureModel(msg.ID, msg.grouped_id, null, msg.media));
+                            if (meAccount != null && msg.from_id != null && msg.from_id.ID == meAccount.ID)
+                                message.IsOriginNative = true;
+                            messages.Add(message);
+                            NoFoundGroup = false;
+                            message = null;
+                        }
+                    }
+                    else if (msgBase is TL.MessageService ms)
+                    {
+                        messages.Add(new MessageModel(ms));
+                    }
+                }
+                if (messages.Count() >= count) break;
+                offset_id = (mode) ? offset_id - mes.Messages.Length : offset_id + mes.Messages.Length;                
+            }
+
+            //messages.ForAll(m => 
+            //{
+            //    string path = @"C:\Users\Sazke\Documents\meshistirybefore.txt";
+            //    File.AppendAllTextAsync(path, m.ID.ToString() + "\n");
+            //});
+
+            return messages;
         }
 
         // Получение InputPeer

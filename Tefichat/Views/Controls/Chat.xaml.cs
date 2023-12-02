@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using TL;
 
 namespace Tefichat.Views.Controls
 {
@@ -27,11 +28,11 @@ namespace Tefichat.Views.Controls
 
         private void MessageItems_ScrollChanged(object sender, ScrollChangedEventArgs e)
         {
-            //var height = MessageItems.ActualHeight;
+            var height = MessageItems.Height;
             var offset = e.VerticalOffset;
             var viewport = e.ViewportHeight;
 
-            //var topTreshold = offset;
+            var topTreshold = offset;
             var bottomTreshold = offset + viewport;
 
             Point pointItem = new Point();
@@ -83,11 +84,17 @@ namespace Tefichat.Views.Controls
                 }
             }
 
-            //MessageBox.Show($"Offset: {offset}\nViewPort: {viewport}\nTopTreshold: {topTreshold}\nBottomTreshold: {bottomTreshold}\nPointItem: {pointItem.Y}\nItemsView {i}");
+            //MessageBox.Show($"Height: {height}\nOffset: {offset}\nViewPort: {viewport}\nTopTreshold: {topTreshold}\nBottomTreshold: {bottomTreshold}\nPointItem: {pointItem.Y}\nItemsView {i}");
 
-            //if (e.VerticalOffset < 10 && items.Count > 2)
+            //if (e.VerticalOffset < 10 && items?.Count > 2)
             //{
-            //    MessageBox.Show("OPA");
+            //    MessageItems.SelectedItem = items[0];
+            //    MessageBox.Show("Top");
+            //}
+
+            //if (Math.Abs(bottomTreshold - pointItem.Y) > 150)
+            //{
+            //    MessageBox.Show("Bottom");
             //}
 
         }

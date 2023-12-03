@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Tefichat.Models;
+using Tefichat.Services.EventAgs;
 using TL;
 
 namespace Tefichat.Services
@@ -11,6 +12,11 @@ namespace Tefichat.Services
     public interface ITelegramService
     {
         event EventHandler<EventArgs> Login;
+        event EventHandler<NewMessageEventArgs> NewMessage;
+        event EventHandler<ReadChannelInboxEventArgs> ReadChannelInbox;
+        event EventHandler<ReadChannelOutboxEventArgs> ReadChannelOutbox;
+        event EventHandler<ReadHistoryInboxEventArgs> ReadHistoryInbox;
+        event EventHandler<ReadHistoryOutboxEventArgs> ReadHistoryOutbox;
 
         bool HasLogin { get; }
         Task CheckLogin();
@@ -18,7 +24,7 @@ namespace Tefichat.Services
         Task<List<DialogModel>> GetAllDialogs();
         Task<List<MessageModel>> GetLastMessages();
         Task<bool> ReadMessage(DialogModel dialog, int max_id);
-        Task<bool> SendMessage(DialogModel dialog, string text);
+        Task<Message> SendMessage(DialogModel dialog, string text);
         Task<List<MessageModel>> GetMessagesHistoryDialog(DialogModel dialog, int offset_id = 0, int add_offset = 0, int count = 20, bool mode = false);
     }
 }

@@ -39,19 +39,21 @@ namespace Tefichat.Views.Controls
             viewport = e.ViewportHeight;
 
             //var topTreshold = offset;
-            //var bottomTreshold = offset + viewport;
+            var bottomTreshold = offset + viewport;
 
-            //Point pointItem;
+            Point pointItem;
 
-            //int i = 0;
+            int i = 0;
             var items = MessageItems.Items;
 
-            /*if (items != null && items.Count > 1)
+            if (items != null && items.Count > 1)
             {
                 foreach (var item in items)
                 {
                     var cont = (ListBoxItem)MessageItems.ItemContainerGenerator.ContainerFromItem(item);
-                    pointItem = cont.TransformToAncestor(MessageItems).Transform(new Point(0, 0));
+                    if (cont != null)
+                        pointItem = cont.TransformToAncestor(MessageItems).Transform(new Point(0, 0));
+                    else return;
 
                     if (pointItem.Y > 0)
                     {
@@ -63,7 +65,7 @@ namespace Tefichat.Views.Controls
                         if (bottom <= bottomTreshold) //top >= topTreshold && 
                         {
                             i++;
-                            //MessageItems.SelectedItem = item;
+                            MessageItems.SelectedItem = item;
                             //var vm = (MainVM)DataContext;
                             //if (vm != null)
                             //{
@@ -73,13 +75,13 @@ namespace Tefichat.Views.Controls
                         }
                     }
                 }
-            }*/
+            }
             //string path = @"C:\Users\Sazke\Documents\scrollposintion2.txt";
             //string pos = $"Height: {height}\nOffset: {offset}\nTopTreshold: {topTreshold}\nBottomTreshold: {bottomTreshold}\nPointItem: {pointItem.Y}\n\n";
             //File.AppendAllTextAsync(path, pos);
             //MessageBox.Show($"Height: {height}\nOffset: {offset}\nViewPort: {viewport}\nTopTreshold: {topTreshold}\nBottomTreshold: {bottomTreshold}\nPointItem: {pointItem.Y}\nItemsView {i}");
 
-            if (items.Count > 2)
+            /*if (items.Count > 2)
             {
                 if (e.VerticalOffset < 3)
                 {
@@ -97,7 +99,7 @@ namespace Tefichat.Views.Controls
                     MessageItems.SelectedItem = items[items.Count - 1];
                     //MessageBox.Show($"{bottomTreshold}\n{point.Y + offset}");
                 }
-            }
+            }*/
         }
     }
 }

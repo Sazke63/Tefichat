@@ -8,21 +8,21 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="20"/>
                 <ColumnDefinition/>
-                <ColumnDefinition Width="50"/>
+                <ColumnDefinition Width="54"/>
             </Grid.ColumnDefinitions>
 
             <!--Logo-->
             <Grid Grid.Column="0" Margin="8,0,12,0" HorizontalAlignment="Left" Visibility="Collapsed">
 
                 <Border x:Name="IconDialog"
-                        Height="46" Width="46"
-                        CornerRadius="46"
-                        Background="Gray" 
-                        Visibility="Collapsed">
+                    Height="46" Width="46"
+                    CornerRadius="46"
+                    Background="Gray" 
+                    Visibility="Collapsed">
 
                     <TextBlock x:Name="NameTxt" Text="U" 
-                               FontSize="16" HorizontalAlignment="Center" 
-                               VerticalAlignment="Center" Foreground="Black"/>
+                            FontSize="16" HorizontalAlignment="Center" 
+                            VerticalAlignment="Center" Foreground="Black"/>
 
                 </Border>
 
@@ -44,18 +44,18 @@
                 <Grid Grid.Row="0">
 
                     <TextBlock Grid.Column="0" Text="{Binding Name}" 
-                               HorizontalAlignment="Stretch"
-                               Foreground="WhiteSmoke"
-                               Margin="0,4,20,0"
-                               FontWeight="Regular"/>
+                            HorizontalAlignment="Stretch"
+                            Foreground="WhiteSmoke"
+                            Margin="0,4,20,0"
+                            FontWeight="Regular"/>
 
                 </Grid>
 
                 <Grid Grid.Row="1">
                     <emoji:TextBlock Grid.Row="1" Text="{Binding LastMessage.Message, Mode=TwoWay}"
-                               FontSize="13" Foreground="Gray"
-                               HorizontalAlignment="Left"
-                               Margin="0,0,0,0" Height="20"/>
+                            FontSize="13" Foreground="Gray"
+                            HorizontalAlignment="Left"
+                            Margin="0,0,0,0" Height="20"/>
                 </Grid>
 
             </Grid>
@@ -67,22 +67,21 @@
                 </Grid.RowDefinitions>
 
                 <TextBlock Grid.Row="0" Text="{Binding LastMessage.Date, StringFormat={}{0:t},ConverterCulture={}, Mode=TwoWay}"
-                               Foreground="DarkGray"
-                               HorizontalAlignment="Right"
-
-                               Margin="8,2,4,0"/>
+                            Foreground="DarkGray"
+                            HorizontalAlignment="Right"
+                            Margin="8,2,4,0"/>
 
                 <Border Grid.Row="1" x:Name="IconUnreadMes" CornerRadius="10"
-                        Height="20" MinWidth="20"
-                        Background="#2b5278" BorderThickness="0"
-                        HorizontalAlignment="Right"
-                        Margin="10,0,4,0">
+                    Height="20" MinWidth="20"
+                    Background="#2b5278" BorderThickness="0"
+                    HorizontalAlignment="Right"
+                    Margin="10,0,4,0">
 
                     <TextBlock Text="{Binding Unread_count}" x:Name="UnreadMes"
-                               HorizontalAlignment="Center" 
-                               VerticalAlignment="Center"
-                               Margin="6,1,6,1"
-                               FontSize="13"/>
+                            HorizontalAlignment="Center" 
+                            VerticalAlignment="Center"
+                            Margin="6,1,6,1"
+                            FontSize="13"/>
 
                 </Border>
 
@@ -92,13 +91,13 @@
         </Grid>
 
         <DataTemplate.Triggers>
-            <DataTrigger Binding="{Binding Photo}" Value="{x:Null}">
-                <Setter TargetName="PhotoDialog" Property="Visibility" Value="Collapsed"/>
-                <Setter TargetName="IconDialog" Property="Visibility" Value="Visible"/>
-            </DataTrigger>
-            <DataTrigger Binding="{Binding Unread_count}" Value="0">
-                <Setter TargetName="IconUnreadMes" Property="Visibility" Value="Collapsed"/>
-            </DataTrigger>
+        <DataTrigger Binding="{Binding Photo}" Value="{x:Null}">
+            <Setter TargetName="PhotoDialog" Property="Visibility" Value="Collapsed"/>
+            <Setter TargetName="IconDialog" Property="Visibility" Value="Visible"/>
+        </DataTrigger>
+        <DataTrigger Binding="{Binding Unread_count}" Value="0">
+            <Setter TargetName="IconUnreadMes" Property="Visibility" Value="Collapsed"/>
+        </DataTrigger>
         </DataTemplate.Triggers>
     </DataTemplate>
 

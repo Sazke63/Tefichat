@@ -15,6 +15,7 @@ using System.Windows.Input;
 using Tefichat.Base;
 using Tefichat.Models;
 using Tefichat.Services;
+using Tefichat.Services.EventAgs;
 using Tefichat.Views.Controls;
 using TL;
 
@@ -23,6 +24,7 @@ namespace Tefichat.ViewModels
     public class MainVM : ObservableObject
     {
         private ITelegramService _telegramService;
+        private long GroupID;
         private int MaxID;
 
         // Видимость окна чата
@@ -81,8 +83,8 @@ namespace Tefichat.ViewModels
 
                         if (value.ID > MaxID)
                         {
-                            //ReadMessageCommand.CanExecute(null);
-                            //ReadMessageCommand.Execute(null);
+                            ReadMessageCommand.CanExecute(null);
+                            ReadMessageCommand.Execute(null);
                         }                       
                     }
 
@@ -112,7 +114,7 @@ namespace Tefichat.ViewModels
             set
             {
                 searchText = value;
-                SearchCollectionViewSource.Filter = DoesCollectionContainName;
+                //SearchCollectionViewSource.Filter = DoesCollectionContainName;
             }
         }
 
@@ -148,6 +150,13 @@ namespace Tefichat.ViewModels
             GetPrevMessagesCommand = new RelayCommand(async (o) => await GetPrevMessages(o));
             GetNextMessagesCommand = new RelayCommand(async (o) => await GetNextMessages(o));
             ShowMenuCommand = new RelayCommand((o) => ShowMenu());
+
+            // Подписка на обновления
+            _telegramService.NewMessage += NewMessage;
+            _telegramService.ReadChannelInbox += ReadChannelInbox;
+            _telegramService.ReadChannelOutbox += ReadChannelOutbox;
+            _telegramService.ReadHistoryInbox += ReadHistoryInbox;
+            _telegramService.ReadHistoryOutbox += ReadHistoryOutbox;
         }
 
         public async Task DownloadData()
@@ -186,15 +195,15 @@ namespace Tefichat.ViewModels
             List<MessageModel> messages = new List<MessageModel>();
             int lastMsgID = selectedDialog is ChannelDialogModel ? SelectedDialog.Read_inbox_max_id + 1 : SelectedDialog.Read_outbox_max_id + 1;
 
-            if (selectedDialog != null)
+            if (selectedDialog != null && lastMsgID != 0)
             {
                 //var unread = selectedDialog.Unread_count;
-                messages = await _telegramService.GetMessagesHistoryDialog(selectedDialog, lastMsgID, -15, mode: true);
+                messages = await _telegramService.GetMessagesHistoryDialog(selectedDialog, lastMsgID, count: 30, mode: true);
             }
 
             messages.ForEach(m => SelectedDialog.Messages.Insert(0, m));
 
-            SelectMessage = SelectedDialog.Messages.SingleOrDefault(m => m.ID == lastMsgID);
+            //SelectMessage = SelectedDialog.Messages.SingleOrDefault(m => m.ID == lastMsgID);
             //SelectedDialog.Messages.ForAll(m =>
             //{
             //    string path = @"C:\Users\Sazke\Documents\meshistiryafter.txt";
@@ -242,9 +251,12 @@ namespace Tefichat.ViewModels
         {
             if (message is null) return;
 
-            var result = await _telegramService.SendMessage(selectedDialog, message);
-            if (result)
+            var MesSend = await _telegramService.SendMessage(selectedDialog, message);
+            if (MesSend.id != 0)
+            {
                 Message = "";
+                SelectedDialog.Messages.Add(new MessageModel(MesSend, true));
+            }
         }
 
         private async Task ReadMessage(object o)
@@ -261,6 +273,77 @@ namespace Tefichat.ViewModels
                 SelectedDialog.Read_outbox_max_id = selectMessage.ID;
                 SelectedDialog.Unread_count -= 1;
             }
+        }
+
+        // Методы для обработки обновлений
+        private void NewMessage(object Sender, NewMessageEventArgs e)
+        {
+            if (Dialogs.Count == 0) return;
+
+            var dlg = Dialogs.SingleOrDefault(d =>d.Peer.ID == e.Message.Peer.ID);
+
+            if (dlg != null)
+            {
+                if (dlg.Unread_count == 0)
+                {
+                    if (e.Message.Grouped_id == 0)
+                    {
+                        dlg.Messages.Add(e.Message);
+                    }
+                    else
+                    {
+                        if (e.Message.Message != "")
+                        {
+                            GroupID = e.Message.Grouped_id;
+                            dlg.Messages.Add(e.Message);
+                        }
+                        else
+                        {
+                            var mes = dlg.Messages.SingleOrDefault(m => m.Grouped_id == GroupID);
+                            //if (mes != null)
+                            //    mes.Photos.Add(e.Message.Photos[0]);
+                        }
+                    }
+                }
+                if (!e.Message.IsOriginNative)
+                    dlg.Unread_count += 1;
+
+                dlg.LastMessage = e.Message;
+            }
+        }
+
+        private void ReadChannelInbox(object sender, ReadChannelInboxEventArgs e)
+        {
+            if (Dialogs.Count == 0) return;
+
+            var dlgs = Dialogs.SingleOrDefault(x => x.Peer.ID == e.ReadChannelInbox.channel_id);
+            dlgs.Read_inbox_max_id = e.ReadChannelInbox.max_id;
+            dlgs.Unread_count = e.ReadChannelInbox.still_unread_count;
+        }
+
+        private void ReadChannelOutbox(object sender, ReadChannelOutboxEventArgs e)
+        {
+            if (Dialogs.Count == 0) return;
+
+            var dlgs = Dialogs.SingleOrDefault(x => x.Peer.ID == e.ReadChannelOutbox.channel_id);
+            dlgs.Read_outbox_max_id = e.ReadChannelOutbox.max_id;
+        }
+
+        private void ReadHistoryInbox(object sender, ReadHistoryInboxEventArgs e)
+        {
+            if (Dialogs.Count == 0) return;
+
+            var dlgs = Dialogs.SingleOrDefault(x => x.Peer.ID == e.ReadHistoryInbox.peer.ID);
+            dlgs.Read_inbox_max_id = e.ReadHistoryInbox.max_id;
+            dlgs.Unread_count = e.ReadHistoryInbox.still_unread_count;
+        }
+
+        private void ReadHistoryOutbox(object sender, ReadHistoryOutboxEventArgs e)
+        {
+            if (Dialogs.Count == 0) return;
+
+            var dlgs = Dialogs.SingleOrDefault(x => x.Peer.ID == e.ReadHistoryOutbox.peer.ID);
+            dlgs.Read_outbox_max_id = e.ReadHistoryOutbox.max_id;
         }
 
         private bool DoesCollectionContainName(object dialogName)

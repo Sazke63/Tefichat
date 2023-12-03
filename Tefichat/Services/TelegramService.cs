@@ -1,6 +1,7 @@
 ﻿using Stfu.Linq;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Security.Principal;
@@ -8,6 +9,7 @@ using System.Security.RightsManagement;
 using System.Threading.Tasks;
 using System.Windows;
 using Tefichat.Models;
+using Tefichat.Services.EventAgs;
 using Tefichat.Views.Controls;
 using TL;
 using WTelegram;
@@ -25,9 +27,16 @@ namespace Tefichat.Services
         // Данные
         private User meAccount;
         private Messages_Dialogs data;
+        private readonly Dictionary<long, User> Users = new Dictionary<long, User>();
+        private readonly Dictionary<long, ChatBase> Chats = new Dictionary<long, ChatBase>();
 
         // Оповещения
         public event EventHandler<EventArgs> Login;
+        public event EventHandler<NewMessageEventArgs> NewMessage;
+        public event EventHandler<ReadChannelInboxEventArgs> ReadChannelInbox;
+        public event EventHandler<ReadChannelOutboxEventArgs> ReadChannelOutbox;
+        public event EventHandler<ReadHistoryInboxEventArgs> ReadHistoryInbox;
+        public event EventHandler<ReadHistoryOutboxEventArgs> ReadHistoryOutbox;
 
         public bool HasLogin { get; set; } = false;
 
@@ -35,6 +44,7 @@ namespace Tefichat.Services
         {
             phoneNumber = Properties.Settings.Default.PhoneNumber;
             telegramClient = new Client(api_id, api_hash);
+            telegramClient.OnUpdate += TelegramClient_OnUpdate;
         }
 
         public static TelegramService GetInstance() => telegramService;
@@ -113,7 +123,7 @@ namespace Tefichat.Services
                     else
                         return new MessageModel(msg);
                 }
-                else if (m is TL.MessageService ms)
+                else if (m is MessageService ms)
                 {
                     return new MessageModel(ms);
                 }
@@ -128,11 +138,11 @@ namespace Tefichat.Services
         }
 
         // Отправка сообщения
-        public async Task<bool> SendMessage(DialogModel dialog, string text)
+        public async Task<Message> SendMessage(DialogModel dialog, string text)
         {
             InputPeer inputPeer = GetInputPeer(dialog);
             var answer = await telegramClient.SendMessageAsync(inputPeer, text);
-            return answer.ID != 0;
+            return answer;
         }
 
         // Загрузка истории чата
@@ -186,7 +196,7 @@ namespace Tefichat.Services
                             message = null;
                         }
                     }
-                    else if (msgBase is TL.MessageService ms)
+                    else if (msgBase is MessageService ms)
                     {
                         message = new MessageModel(ms);
                         AddMessage();
@@ -204,7 +214,7 @@ namespace Tefichat.Services
                         }
                     }
                 }
-                if (messages.Count() >= count) break;
+                if (messages.Count() >= count || mes.Count > count) break;
                 else AddPlus = true;
                 offset_id = (mode) ? offset_id - mes.Messages.Length : offset_id + mes.Messages.Length;                
             }
@@ -229,5 +239,54 @@ namespace Tefichat.Services
             }
             return null;
         }
+
+        // Проверка обновлений
+        private async Task TelegramClient_OnUpdate(IObject arg)
+        {
+            if (!(arg is UpdatesBase updates)) return;
+            updates.CollectUsersChats(Users, Chats);
+
+            foreach (var update in updates.UpdateList)
+            {
+                switch (update)
+                {
+                    case UpdateNewMessage unm:
+                        {
+                            if (unm.message is Message msg)
+                            {
+                                var telmes = new MessageModel(msg);
+
+                                //if (msg.media != null)
+                                //{
+                                //    switch (msg.media)
+                                //    {
+                                //        case TL.MessageMediaPhoto mmp:
+                                //            {
+                                //                var photo = await DownloadPhoto(msg.media);
+                                //                telmes.Photos.Add(new PictureModel(msg.ID, msg.grouped_id, photo, msg.media));
+                                //                break;
+                                //            }
+                                //        default: break;
+                                //    }
+                                //}
+                                if (meAccount != null && msg.from_id != null && msg.from_id.ID == meAccount.ID)
+                                    telmes.IsOriginNative = true;
+
+                                NewMessage?.Invoke(this, new NewMessageEventArgs(telmes));
+                            }
+                            break;
+                        }
+                    case UpdateReadChannelInbox urci: ReadChannelInbox(this, new ReadChannelInboxEventArgs(urci)); break;
+                    case UpdateReadChannelOutbox urco: ReadChannelOutbox(this, new ReadChannelOutboxEventArgs(urco)); break;
+                    case UpdateReadHistoryInbox urhi: ReadHistoryInbox(this, new ReadHistoryInboxEventArgs(urhi)); break;
+                    case UpdateReadHistoryOutbox urho: ReadHistoryOutbox(this, new ReadHistoryOutboxEventArgs(urho)); break;
+                    //case UpdateChannel upch: UpdChannel(this, new ChannelEventArgs(upch)); break;
+                    //case UpdateChat upct: UpdChat(this, new ChatEventArgs(upct)); break;
+                    //case UpdateUser upus: UpdUser(this, new UserEventArgs(upus)); break;
+                    default: break;
+                }
+            }
+        }
+
     }
 }

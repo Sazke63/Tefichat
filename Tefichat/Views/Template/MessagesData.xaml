@@ -34,8 +34,13 @@
                         <RowDefinition/>
                     </Grid.RowDefinitions>
 
-                    <!--Photo-->
-                    <Grid Grid.Column="0" Grid.Row="0" x:Name="PhotoMessageGrid" Grid.ColumnSpan="2">
+                    <!-- Заголовок -->
+                    <Grid Grid.Column="0" Grid.Row="0">
+                        <!--TextBlock Text="{Binding Peer.ID}" Foreground="WhiteSmoke" Margin="12,6,0,0" FontSize="14"/-->
+                    </Grid>
+                    
+                    <!-- Фото -->
+                    <Grid Grid.Column="0" Grid.Row="1" x:Name="PhotoMessageGrid" Grid.ColumnSpan="2">
                         <Grid.OpacityMask>
                             <VisualBrush Visual="{Binding ElementName=ClipBorder}"/>
                         </Grid.OpacityMask>
@@ -78,7 +83,7 @@
 
                     </Grid>
 
-                    <!--Message-->
+                    <!-- Сообщение -->
                     <emoji:TextBlock x:Name="MessageTxtBlock" Text="{Binding Message}"
                                      VerticalAlignment="Center"
                                      Foreground="WhiteSmoke"
@@ -89,11 +94,9 @@
                                      Panel.ZIndex="1"
                                      Grid.Column="0"
                                      FontSize="13"
-                                     Grid.Row="1"/>
+                                     Grid.Row="2"/>
 
-                    <Grid Grid.Column="0" Grid.Row="2"/>
-
-                    <!--" Date and Read-->
+                    <!-- Дата и Read-->
                     <Grid Grid.Column="1" Grid.Row="3" Margin="0,0,0,5"  HorizontalAlignment="Right" Panel.ZIndex="0">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>

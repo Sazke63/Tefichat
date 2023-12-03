@@ -54,15 +54,16 @@
 
             </Grid>
 
+
             <!--ItemContainerStyle="{StaticResource DialogCard}"-->
             <ListBox Grid.Row="1" x:Name="listBoxContacts" ItemsSource="{Binding SearchCollectionViewSource}"
-                     Background="Transparent" Foreground="WhiteSmoke" FontSize="14" 
-                     BorderThickness="0" SelectedItem="{Binding SelectedDialog}"
-                     ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                     ItemTemplate="{DynamicResource DialogDataTemplate}"
-                     ScrollViewer.VerticalScrollBarVisibility="Auto"
-                     ItemContainerStyle="{DynamicResource DialogCard}"
-                     IsSynchronizedWithCurrentItem="True">
+                    Background="Transparent" Foreground="WhiteSmoke" FontSize="14" 
+                    BorderThickness="0" SelectedItem="{Binding SelectedDialog}"
+                    ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                    ItemTemplate="{DynamicResource DialogDataTemplate}"
+                    ScrollViewer.VerticalScrollBarVisibility="Auto"
+                    ItemContainerStyle="{DynamicResource DialogCard}"
+                    IsSynchronizedWithCurrentItem="True">
 
                 <i:Interaction.Triggers>
                     <i:EventTrigger EventName="SelectionChanged">
@@ -70,6 +71,7 @@
                     </i:EventTrigger>
                 </i:Interaction.Triggers>
             </ListBox>
+
 
         </Grid>
 

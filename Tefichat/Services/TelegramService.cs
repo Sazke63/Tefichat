@@ -121,6 +121,12 @@ namespace Tefichat.Services
             }).Where(m => m.ID != 666).ToList();
         }
 
+        // Чтение сообщений
+        public async Task<bool> ReadMessage(DialogModel dialog, int max_id)
+        {
+            return await telegramClient.ReadHistory(GetInputPeer(dialog), max_id);
+        }
+
         // Отправка сообщения
         public async Task<bool> SendMessage(DialogModel dialog, string text)
         {
@@ -130,7 +136,7 @@ namespace Tefichat.Services
         }
 
         // Загрузка истории чата
-        public async Task<List<MessageModel>> GetMessagesHistoryDialog(DialogModel dialog, int offset_id = 0, int add_offset = 0, int count = 20, bool mode = false)
+        public async Task<List<MessageModel>> GetMessagesHistoryDialog(DialogModel dialog, int offset_id = 0, int add_offset = 0, int count = 30, bool mode = false)
         {
             if (dialog == null) return null;
 
@@ -139,6 +145,7 @@ namespace Tefichat.Services
             var limit = count > 100 ? 100 : count;
             MessageModel message = null;
             bool NoFoundGroup = false;
+            bool AddPlus = false;
 
             for (; ; ) //int offset_id = 0
             {
@@ -146,8 +153,9 @@ namespace Tefichat.Services
 
                 if (mes.Messages.Length == 0) break;
 
+                var i = 0;
                 foreach (var msgBase in mes.Messages)
-                {
+                {                   
                     if (msgBase is Message msg)
                     {
                         if (msg.grouped_id != 0)
@@ -172,21 +180,36 @@ namespace Tefichat.Services
                             //    message.Photos.Add(new PictureModel(msg.ID, msg.grouped_id, null, msg.media));
                             if (meAccount != null && msg.from_id != null && msg.from_id.ID == meAccount.ID)
                                 message.IsOriginNative = true;
-                            messages.Add(message);
+                            AddMessage();
+                                
                             NoFoundGroup = false;
                             message = null;
                         }
                     }
                     else if (msgBase is TL.MessageService ms)
                     {
-                        messages.Add(new MessageModel(ms));
+                        message = new MessageModel(ms);
+                        AddMessage();
+                        message = null;
+                    }
+
+                    void AddMessage()
+                    {
+                        if (mode || !AddPlus)
+                            messages.Add(message);
+                        else
+                        {
+                            messages.Insert(i, message);
+                            i++;
+                        }
                     }
                 }
                 if (messages.Count() >= count) break;
+                else AddPlus = true;
                 offset_id = (mode) ? offset_id - mes.Messages.Length : offset_id + mes.Messages.Length;                
             }
 
-            //messages.ForAll(m => 
+            //messages.ForAll(m =>
             //{
             //    string path = @"C:\Users\Sazke\Documents\meshistirybefore.txt";
             //    File.AppendAllTextAsync(path, m.ID.ToString() + "\n");

@@ -75,7 +75,7 @@ namespace Tefichat.ViewModels
                     {
                         switch (selectedDialog)
                         {
-                            case ChannelDialogModel channel when channel.IsChannel: MaxID = SelectedDialog.Read_inbox_max_id; break;
+                            case ChannelDialogModel channel: MaxID = SelectedDialog.Read_inbox_max_id; break;
                             default: MaxID = SelectedDialog.Read_outbox_max_id; break;
                         }
 
@@ -83,8 +83,7 @@ namespace Tefichat.ViewModels
                         {
                             //ReadMessageCommand.CanExecute(null);
                             //ReadMessageCommand.Execute(null);
-                        }
-                        OnPropertyChanged(nameof(SelectMessage));
+                        }                       
                     }
 
                     if (SelectMessage.ID == selectedDialog.Messages.Last().ID && MaxID < selectedDialog.TopMessage - 1)
@@ -92,6 +91,14 @@ namespace Tefichat.ViewModels
                         GetNextMessagesCommand.CanExecute(null);
                         GetNextMessagesCommand.Execute(null);
                     }
+                    if (SelectMessage.ID == selectedDialog.Messages[2].ID)
+                    {
+                        GetPrevMessagesCommand.CanExecute(null);
+                        //GetPrevMessagesCommand.Execute(null);
+                        //Task.Delay(1);
+                    }
+
+                    OnPropertyChanged(nameof(SelectMessage));
                 }
             }
         }
@@ -122,8 +129,10 @@ namespace Tefichat.ViewModels
 
 
         public ICommand GetMessagesCommand { get; set; }
+        public ICommand GetPrevMessagesCommand { get; set; }
         public ICommand GetNextMessagesCommand { get; set; }
         public ICommand SendMessageCommand { get; set; }
+        public ICommand ReadMessageCommand { get; set; }
         public ICommand ShowMenuCommand { get; set; }
 
         public MainVM()
@@ -134,7 +143,9 @@ namespace Tefichat.ViewModels
             //SearchCollectionViewSource.SortDescriptions.Add(new SortDescription("LastMessage.Date", ListSortDirection.Ascending));
             //GetMessagesCommand = new RelayCommand(async(o) => await GetMessages(o));
             SendMessageCommand = new RelayCommand(async (o) => await SendMessage(o));
+            ReadMessageCommand = new RelayCommand(async (o) => await ReadMessage(o));
             GetMessagesCommand = new RelayCommand(async (o) => await GetMessages(o));
+            GetPrevMessagesCommand = new RelayCommand(async (o) => await GetPrevMessages(o));
             GetNextMessagesCommand = new RelayCommand(async (o) => await GetNextMessages(o));
             ShowMenuCommand = new RelayCommand((o) => ShowMenu());
         }
@@ -165,13 +176,6 @@ namespace Tefichat.ViewModels
             }
         }
 
-        private async Task GetPrevMessages(object o)
-        {
-            var fstMsgID = selectedDialog.Messages.First().ID;
-            var messages = await _telegramService.GetMessagesHistoryDialog(selectedDialog, fstMsgID, 10);
-            messages.AsParallel().ForAll(m => SelectedDialog.Messages.Insert(0, m));
-        }
-
         private async Task GetMessages(object o)
         {
             if (!IsChatVisible) IsChatVisible = true;
@@ -185,16 +189,25 @@ namespace Tefichat.ViewModels
             if (selectedDialog != null)
             {
                 //var unread = selectedDialog.Unread_count;
-                messages = await _telegramService.GetMessagesHistoryDialog(selectedDialog, lastMsgID, count: Math.Abs(20 - count), mode: true);
+                messages = await _telegramService.GetMessagesHistoryDialog(selectedDialog, lastMsgID, -15, mode: true);
             }
 
             messages.ForEach(m => SelectedDialog.Messages.Insert(0, m));
 
+            SelectMessage = SelectedDialog.Messages.SingleOrDefault(m => m.ID == lastMsgID);
             //SelectedDialog.Messages.ForAll(m =>
             //{
             //    string path = @"C:\Users\Sazke\Documents\meshistiryafter.txt";
             //    File.AppendAllTextAsync(path, m.ID.ToString() + "\n");
             //});
+        }
+
+        private async Task GetPrevMessages(object o)
+        {
+            var fstMsgID = selectedDialog.Messages.FirstOrDefault().ID;
+            var messages = await _telegramService.GetMessagesHistoryDialog(selectedDialog, fstMsgID, 10);
+            messages.ForAll(m => SelectedDialog.Messages.Insert(0, m));
+            //SelectMessage = SelectedDialog.Messages.SingleOrDefault(m => m.ID == fstMsgID);
         }
 
         private async Task GetNextMessages(object o)
@@ -203,7 +216,7 @@ namespace Tefichat.ViewModels
 
             if (selectedDialog.Messages.Last().ID == selectedDialog.TopMessage) return;
 
-            var messages = await _telegramService.GetMessagesHistoryDialog(selectedDialog, lastMsgID, -10, 10);
+            var messages = await _telegramService.GetMessagesHistoryDialog(selectedDialog, lastMsgID, -20, 20);
             var index = SelectedDialog.Messages.Count();
             messages.ForEach(m =>
             {
@@ -218,11 +231,11 @@ namespace Tefichat.ViewModels
                 }
             });
 
-            SelectedDialog.Messages.ForAll(m =>
-            {
-                string path = @"C:\Users\Sazke\Documents\meshistiryafter.txt";
-                File.AppendAllTextAsync(path, m.ID.ToString() + "\n");
-            });
+            //SelectedDialog.Messages.ForAll(m =>
+            //{
+            //    string path = @"C:\Users\Sazke\Documents\meshistiryafter.txt";
+            //    File.AppendAllTextAsync(path, m.ID.ToString() + "\n");
+            //});
         }
 
         private async Task SendMessage(object o)
@@ -232,6 +245,22 @@ namespace Tefichat.ViewModels
             var result = await _telegramService.SendMessage(selectedDialog, message);
             if (result)
                 Message = "";
+        }
+
+        private async Task ReadMessage(object o)
+        {
+            var result = await _telegramService.ReadMessage(SelectedDialog, selectMessage.ID);
+
+            if (result && SelectedDialog is ChannelDialogModel)
+            {
+                SelectedDialog.Read_inbox_max_id = selectMessage.ID;
+                SelectedDialog.Unread_count -= 1;
+            }
+            else if (result)
+            {
+                SelectedDialog.Read_outbox_max_id = selectMessage.ID;
+                SelectedDialog.Unread_count -= 1;
+            }
         }
 
         private bool DoesCollectionContainName(object dialogName)

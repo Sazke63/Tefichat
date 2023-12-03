@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -21,6 +22,11 @@ namespace Tefichat.Views.Controls
     /// </summary>
     public partial class Chat : UserControl
     {
+        double offset;
+        double viewport;
+        ListBoxItem? cont;
+        Point point;
+
         public Chat()
         {
             InitializeComponent();
@@ -28,30 +34,24 @@ namespace Tefichat.Views.Controls
 
         private void MessageItems_ScrollChanged(object sender, ScrollChangedEventArgs e)
         {
-            var height = MessageItems.Height;
-            var offset = e.VerticalOffset;
-            var viewport = e.ViewportHeight;
+            //var height = MessageItems.ActualHeight;
+            offset = e.VerticalOffset;
+            viewport = e.ViewportHeight;
 
-            var topTreshold = offset;
-            var bottomTreshold = offset + viewport;
+            //var topTreshold = offset;
+            //var bottomTreshold = offset + viewport;
 
-            Point pointItem = new Point();
+            //Point pointItem;
 
-            int i = 0;
+            //int i = 0;
             var items = MessageItems.Items;
 
-            //int from = Int32.MaxValue;
-            //int to = Int32.MinValue;
-
-            if (items != null && items.Count > 1)
+            /*if (items != null && items.Count > 1)
             {
                 foreach (var item in items)
                 {
-                    //var listBoxItem = (ListBoxItem)MessageItems.ItemContainerGenerator.ContainerFromIndex(i);
                     var cont = (ListBoxItem)MessageItems.ItemContainerGenerator.ContainerFromItem(item);
                     pointItem = cont.TransformToAncestor(MessageItems).Transform(new Point(0, 0));
-                    //var data = cont;
-
 
                     if (pointItem.Y > 0)
                     {
@@ -63,40 +63,41 @@ namespace Tefichat.Views.Controls
                         if (bottom <= bottomTreshold) //top >= topTreshold && 
                         {
                             i++;
-                            MessageItems.SelectedItem = item;
+                            //MessageItems.SelectedItem = item;
                             //var vm = (MainVM)DataContext;
                             //if (vm != null)
                             //{
                             //    if (vm.ReadMessageCommand.CanExecute(null))
                             //        vm.ReadMessageCommand.Execute(null);
                             //}
-                            //if (i < from)
-                            //{
-                            //    from = i;
-                            //}
-
-                            //if (i > to)
-                            //{
-                            //    to = i;
-                            //}
                         }
                     }
                 }
-            }
-
+            }*/
+            //string path = @"C:\Users\Sazke\Documents\scrollposintion2.txt";
+            //string pos = $"Height: {height}\nOffset: {offset}\nTopTreshold: {topTreshold}\nBottomTreshold: {bottomTreshold}\nPointItem: {pointItem.Y}\n\n";
+            //File.AppendAllTextAsync(path, pos);
             //MessageBox.Show($"Height: {height}\nOffset: {offset}\nViewPort: {viewport}\nTopTreshold: {topTreshold}\nBottomTreshold: {bottomTreshold}\nPointItem: {pointItem.Y}\nItemsView {i}");
 
-            //if (e.VerticalOffset < 10 && items?.Count > 2)
-            //{
-            //    MessageItems.SelectedItem = items[0];
-            //    MessageBox.Show("Top");
-            //}
+            if (items.Count > 2)
+            {
+                if (e.VerticalOffset < 3)
+                {
+                    MessageItems.SelectedItem = items[2];
+                    //MessageItems.SelectedItem = items[(int)(items.Count / 2)];
+                    //MessageBox.Show("Top" + e.VerticalOffset);
+                }
 
-            //if (Math.Abs(bottomTreshold - pointItem.Y) > 150)
-            //{
-            //    MessageBox.Show("Bottom");
-            //}
+                cont = (ListBoxItem)MessageItems.ItemContainerGenerator.ContainerFromItem(items[^1]);
+                if (cont != null)
+                    point = cont.TransformToAncestor(MessageItems).Transform(new Point(0, 0));
 
+                if ((offset + viewport) > (point.Y + offset))
+                {
+                    MessageItems.SelectedItem = items[items.Count - 1];
+                    //MessageBox.Show($"{bottomTreshold}\n{point.Y + offset}");
+                }
+            }
         }
     }
 }

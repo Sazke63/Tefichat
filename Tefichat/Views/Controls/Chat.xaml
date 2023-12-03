@@ -38,6 +38,7 @@
                  ItemContainerStyle="{DynamicResource ChatItem}"
                  ScrollViewer.CanContentScroll="False"
                  ScrollViewer.ScrollChanged="MessageItems_ScrollChanged"
+                 ScrollViewer.IsDeferredScrollingEnabled="True"
                  Background="Transparent"
                  x:Name="MessageItems"
                  BorderThickness="0"

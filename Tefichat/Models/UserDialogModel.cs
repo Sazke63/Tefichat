@@ -9,26 +9,25 @@ namespace Tefichat.Models
 {
     public class UserDialogModel : DialogModel
     {
-        public bool IsActive { get; set; }
-        public string Name { get; set; }
-        public long AccessHash { get; set; }
+        public User Data { get; set; }
+        public bool IsActive => Data.IsActive;
+        public long AccessHash => Data.access_hash;
+        public string Name => Data.first_name;
 
-        private byte[] _photo;
-        public byte[] Photo
+        private byte[] _avatar;
+        public byte[] Avatar
         {
-            get => _photo;
+            get => _avatar;
             set
             {
-                _photo = value;
-                OnPropertyChanged("Photo");
+                _avatar = value;
+                OnPropertyChanged("Avatar");
             }
         }
 
        public UserDialogModel(Dialog dialog, User user) : base(dialog)
        {
-            IsActive = user.IsActive;
-            Name = user.first_name;
-            AccessHash = user.access_hash;
+            Data = user;
        }
     }
 }

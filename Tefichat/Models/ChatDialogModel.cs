@@ -9,6 +9,7 @@ namespace Tefichat.Models
 {
     public class ChatDialogModel : ChatBaseDialogModel
     {
+        public Chat Data { get; set; }
         public string Name
         {
             get => title;
@@ -19,34 +20,33 @@ namespace Tefichat.Models
             }
         }
 
-        private int participants_count;
+        //private int participants_count;
         public int ParticipantsCount
         {
-            get => participants_count;
+            get => Data.participants_count;
             set
             {
-                participants_count = value;
+                Data.participants_count = value;
                 OnPropertyChanged("ParticipantsCount");
             }
         }
 
-        private DateTime date;
+        //private DateTime date;
         public DateTime Date
         {
-            get => date;
+            get => Data.date;
             set
             {
-                date = value;
+                Data.date = value;
                 OnPropertyChanged("Date");
             }
         }
 
-        public int Version { get; set; }
+        public int Version => Data.version;
 
         public ChatDialogModel(Dialog dialog, Chat chat) : base(dialog, chat)
         {
-            ParticipantsCount = chat.participants_count;
-            Version = chat.version;
+            Data = chat;
         }
     }
 }

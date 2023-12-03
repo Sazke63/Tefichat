@@ -11,6 +11,11 @@
                     <Border CornerRadius="8" Background="Transparent">
 
                         <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition/>
+                                <ColumnDefinition Width="42"/>
+                            </Grid.ColumnDefinitions>
+                            
                             <TextBox Text ="{Binding Message, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                      VerticalContentAlignment="Center"
                                      HorizontalAlignment="Stretch"
@@ -43,12 +48,22 @@
                                     </Style>
                                 </TextBlock.Style>
                             </TextBlock>
+
+                            <Button Grid.Column="2" x:Name="btnSendMessage" 
+                                    Content=">" BorderThickness="0" Margin="0,-6"
+                                    Background="Transparent" Foreground="WhiteSmoke" />
                         </Grid>
 
                     </Border>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
+
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding SelectedDialog.IsChannel}" Value="True">
+                <Setter Property="Visibility" Value="Collapsed"/>
+            </DataTrigger>
+        </Style.Triggers>
     </Style>
 
 </ResourceDictionary>

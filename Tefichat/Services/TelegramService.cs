@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography.Xml;
 using System.Security.Principal;
 using System.Security.RightsManagement;
 using System.Threading.Tasks;
@@ -112,20 +113,21 @@ namespace Tefichat.Services
         }
 
         // Загрузка последнего сообщения всех чатов
-        public async Task<List<MessageModel>> GetLastMessages()
+        public async Task<List<MessageBaseModel>> GetLastMessages()
         {
             return data.Messages.AsParallel().Select(m =>
             {
-                if (m is TL.Message msg)
+                MessageBaseModel messageBaseModel = null;
+                if (m is Message msg)
                 {
                     if (meAccount != null && msg.from_id != null && msg.from_id.ID == meAccount.ID)
-                        return new MessageModel(msg, isOriginNative: true);
+                        return messageBaseModel = new MessageModel(msg, isOriginNative: true);
                     else
                         return new MessageModel(msg);
                 }
                 else if (m is MessageService ms)
                 {
-                    return new MessageModel(ms);
+                    return messageBaseModel = new MessageServiceModel(ms);
                 }
                 return new MessageModel(new Message { id = 666 });
             }).Where(m => m.ID != 666).ToList();
@@ -146,14 +148,15 @@ namespace Tefichat.Services
         }
 
         // Загрузка истории чата
-        public async Task<List<MessageModel>> GetMessagesHistoryDialog(DialogModel dialog, int offset_id = 0, int add_offset = 0, int count = 30, bool mode = false)
+        public async Task<List<MessageBaseModel>> GetMessagesHistoryDialog(DialogModel dialog, int offset_id = 0, int add_offset = 0, int count = 30, bool mode = false)
         {
             if (dialog == null) return null;
 
-            List<MessageModel> messages = new List<MessageModel>();
+            List<MessageBaseModel> messages = new List<MessageBaseModel>();
             TL.InputPeer inputPeer = GetInputPeer(dialog);
             var limit = count > 100 ? 100 : count;
             MessageModel message = null;
+            MessageServiceModel messageService = null;
             bool NoFoundGroup = false;
             bool AddPlus = false;
 
@@ -170,7 +173,7 @@ namespace Tefichat.Services
                     {
                         if (msg.grouped_id != 0)
                         {
-                            var groupMes = messages.SingleOrDefault(m => m.Grouped_id == msg.grouped_id);
+                            var groupMes = (MessageModel)messages.SingleOrDefault(m => m.GroupedId == msg.grouped_id);
                             if (groupMes != null)
                             {
                                 //groupMes.Photos.Insert(0, new PictureModel(msg.ID, msg.grouped_id, null, msg.media));
@@ -190,7 +193,7 @@ namespace Tefichat.Services
                             //    message.Photos.Add(new PictureModel(msg.ID, msg.grouped_id, null, msg.media));
                             if (meAccount != null && msg.from_id != null && msg.from_id.ID == meAccount.ID)
                                 message.IsOriginNative = true;
-                            AddMessage();
+                            AddMessage(message);
                                 
                             NoFoundGroup = false;
                             message = null;
@@ -198,18 +201,18 @@ namespace Tefichat.Services
                     }
                     else if (msgBase is MessageService ms)
                     {
-                        message = new MessageModel(ms);
-                        AddMessage();
-                        message = null;
+                        messageService = new MessageServiceModel(ms);
+                        AddMessage(messageService);
+                        messageService = null;
                     }
 
-                    void AddMessage()
+                    void AddMessage(MessageBaseModel mesAdd)
                     {
                         if (mode || !AddPlus)
-                            messages.Add(message);
+                            messages.Add(mesAdd);
                         else
                         {
-                            messages.Insert(i, message);
+                            messages.Insert(i, mesAdd);
                             i++;
                         }
                     }

@@ -24,8 +24,8 @@ namespace Tefichat.Models
             }
         }
 
-        private ObservableCollection<MessageModel> messages = new ObservableCollection<MessageModel>();
-        public ObservableCollection<MessageModel> Messages
+        private ObservableCollection<MessageBaseModel> messages = new ObservableCollection<MessageBaseModel>();
+        public ObservableCollection<MessageBaseModel> Messages
         {
             get => messages;
             set
@@ -35,8 +35,8 @@ namespace Tefichat.Models
             }
         }
 
-        private MessageModel _lastMessage;
-        public MessageModel LastMessage
+        private MessageBaseModel _lastMessage;
+        public MessageBaseModel LastMessage
         {
             get => _lastMessage; // messages.Count() != 0 ? messages.Last() : null;
             set

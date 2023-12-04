@@ -36,7 +36,7 @@
 
                     <!-- Заголовок -->
                     <Grid Grid.Column="0" Grid.Row="0">
-                        <!--TextBlock Text="{Binding Peer.ID}" Foreground="WhiteSmoke" Margin="12,6,0,0" FontSize="14"/-->
+                        <!--TextBlock Text="{Binding SelectedDialog.Name}" Foreground="WhiteSmoke" Margin="12,6,0,0" FontSize="14"/-->
                     </Grid>
                     
                     <!-- Фото -->
@@ -112,7 +112,7 @@
                                    Opacity="0.8"
                                    x:Name="Time"/>
 
-                        <Ellipse Grid.Column="1" Width="12" Height="12" HorizontalAlignment="Center" Fill="#2b5278"/>
+                        <Ellipse Grid.Column="1" x:Name="ReadIcon" Width="12" Height="12" HorizontalAlignment="Center" Fill="#2b5278" Visibility="Collapsed"/>
 
                     </Grid>
 
@@ -134,6 +134,9 @@
             </DataTrigger>
             <DataTrigger Binding="{Binding Photos}" Value="True">
                 <Setter TargetName="Time" Property="Panel.ZIndex" Value="1"/>
+            </DataTrigger>
+            <DataTrigger Binding="{Binding }">
+                <Setter TargetName="ReadIcon" Property="Visibility" Value="Visible"/>
             </DataTrigger>
         </DataTemplate.Triggers>
     </DataTemplate>

@@ -22,9 +22,9 @@ namespace Tefichat.Services
         Task CheckLogin();
         Task Authorization(string loginInfo);
         Task<List<DialogModel>> GetAllDialogs();
-        Task<List<MessageModel>> GetLastMessages();
+        Task<List<MessageBaseModel>> GetLastMessages();
         Task<bool> ReadMessage(DialogModel dialog, int max_id);
         Task<Message> SendMessage(DialogModel dialog, string text);
-        Task<List<MessageModel>> GetMessagesHistoryDialog(DialogModel dialog, int offset_id = 0, int add_offset = 0, int count = 20, bool mode = false);
+        Task<List<MessageBaseModel>> GetMessagesHistoryDialog(DialogModel dialog, int offset_id = 0, int add_offset = 0, int count = 20, bool mode = false);
     }
 }

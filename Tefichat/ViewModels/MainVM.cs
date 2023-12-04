@@ -129,7 +129,7 @@ namespace Tefichat.ViewModels
             }
         }
 
-
+        // Команды
         public ICommand GetMessagesCommand { get; set; }
         public ICommand GetPrevMessagesCommand { get; set; }
         public ICommand GetNextMessagesCommand { get; set; }
@@ -194,7 +194,7 @@ namespace Tefichat.ViewModels
             if (SelectedDialog.Messages.Count() >= 20) return;
 
             var count = selectedDialog.Messages.Count();
-            List<MessageModel> messages = new List<MessageModel>();
+            List<MessageBaseModel> messages = new List<MessageBaseModel>();
             int lastMsgID = selectedDialog is ChannelDialogModel ? SelectedDialog.Read_inbox_max_id + 1 : SelectedDialog.Read_outbox_max_id + 1;
 
             if (selectedDialog != null && lastMsgID != 0)
@@ -236,9 +236,12 @@ namespace Tefichat.ViewModels
                 {
                     SelectedDialog.Messages.Insert(index, m);
                 }
-                else if (m.Message == "" && m.media != null)
+                else if (m is MessageModel mes)
                 {
-                    // группировка
+                    if (mes.Message == "" && mes.Media != null)
+                    {
+                        // группировка
+                    }
                 }
             });
 
@@ -268,7 +271,8 @@ namespace Tefichat.ViewModels
             if (result && SelectedDialog is ChannelDialogModel)
             {
                 SelectedDialog.Read_inbox_max_id = selectMessage.ID;
-                SelectedDialog.Unread_count -= 1;
+                //SelectedDialog.Unread_count -= 1;
+                SelectedDialog.Unread_count = SelectedDialog.TopMessage - SelectedDialog.Read_inbox_max_id;
             }
             else if (result)
             {
@@ -288,7 +292,7 @@ namespace Tefichat.ViewModels
             {
                 if (dlg.Unread_count == 0)
                 {
-                    if (e.Message.Grouped_id == 0)
+                    if (e.Message.GroupedId == 0)
                     {
                         dlg.Messages.Add(e.Message);
                     }
@@ -296,12 +300,12 @@ namespace Tefichat.ViewModels
                     {
                         if (e.Message.Message != "")
                         {
-                            GroupID = e.Message.Grouped_id;
+                            GroupID = e.Message.GroupedId;
                             dlg.Messages.Add(e.Message);
                         }
                         else
                         {
-                            var mes = dlg.Messages.SingleOrDefault(m => m.Grouped_id == GroupID);
+                            var mes = dlg.Messages.SingleOrDefault(m => m.GroupedId == GroupID);
                             //if (mes != null)
                             //    mes.Photos.Add(e.Message.Photos[0]);
                         }

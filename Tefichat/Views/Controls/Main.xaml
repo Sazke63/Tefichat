@@ -12,89 +12,20 @@
 
     <UserControl.Resources>
 
+        <DataTemplate DataType="{x:Type vm:MainVM}">
+            <view:Home/>
+        </DataTemplate>
         <DataTemplate DataType="{x:Type vm:MenuVM}">
             <view:Menu/>
         </DataTemplate>
 
-        <BooleanToVisibilityConverter x:Key="BoolToVisChat"/>
         <BooleanToVisibilityConverter x:Key="BoolToVisMenu"/>
 
     </UserControl.Resources>
 
-    <Grid Background="#17212b">
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*" MinWidth="260" MaxWidth="420"/>
-            <ColumnDefinition Width="1"/>
-            <ColumnDefinition Width="1.5*" />
-        </Grid.ColumnDefinitions>
-
-        <!-- Диалоги -->
-        <Grid Grid.Column="0">
-
-            <Grid.RowDefinitions>
-                <RowDefinition Height="53"/>
-                <RowDefinition/>
-            </Grid.RowDefinitions>
-
-            <Grid Grid.Row="0">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="56"/>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
-
-                <Button Grid.Column="0" Name="Menu" Background="#17212b" BorderThickness="0" Margin="10">
-                    <!--Image Source="../Images/menu_icon.png" Margin="5"/-->
-                    <i:Interaction.Triggers>
-                        <i:EventTrigger EventName="Click">
-                            <i:InvokeCommandAction Command="{Binding ShowMenuCommand}"/>
-                        </i:EventTrigger>
-                    </i:Interaction.Triggers>
-                </Button>
-
-                <TextBox Grid.Column="1" Style="{StaticResource SearchBox}" Margin="0,9,10,9"/>
-
-            </Grid>
-
-
-            <!--ItemContainerStyle="{StaticResource DialogCard}"-->
-            <ListBox Grid.Row="1" x:Name="listBoxContacts" ItemsSource="{Binding SearchCollectionViewSource}"
-                    Background="Transparent" Foreground="WhiteSmoke" FontSize="14" 
-                    BorderThickness="0" SelectedItem="{Binding SelectedDialog}"
-                    ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                    ItemTemplate="{DynamicResource DialogDataTemplate}"
-                    ScrollViewer.VerticalScrollBarVisibility="Auto"
-                    ItemContainerStyle="{DynamicResource DialogCard}"
-                    IsSynchronizedWithCurrentItem="True">
-
-                <i:Interaction.Triggers>
-                    <i:EventTrigger EventName="SelectionChanged">
-                        <i:InvokeCommandAction Command="{Binding GetMessagesCommand}"/>
-                    </i:EventTrigger>
-                </i:Interaction.Triggers>
-            </ListBox>
-
-
-        </Grid>
-
-        <!-- Сплиттер -->
-        <GridSplitter Grid.Column="1" ShowsPreview="False" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="#0e1621" Width="1"/>
-
-        <!-- Окно чата -->
-        <Grid Grid.Column="2" Background="#0e1621">
-
-            <Border CornerRadius="18" Background="#17212b" 
-                Width="230" Height="28" Margin="0,1,0,5">
-
-                <TextBlock Text="Выберите чат чтобы начать общение"
-                   FontSize="12" Foreground="WhiteSmoke"
-                   HorizontalAlignment="Center"
-                   VerticalAlignment="Center"/>
-            </Border>
-      
-            <view:Chat Visibility="{Binding IsChatVisible, Converter={StaticResource BoolToVisChat}}"/>
-            <!--view:Menu Visibility="{Binding IsMenuVisible, Converter={StaticResource BoolToVisMenu}}"/-->
-
-        </Grid>
+    <Grid>
+        <view:Home/>
+        <view:Menu Visibility="{Binding IsMenuVisible, Converter={StaticResource BoolToVisMenu}}"/>
     </Grid>
 
 </UserControl>

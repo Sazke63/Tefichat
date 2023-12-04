@@ -43,10 +43,10 @@ namespace Tefichat.ViewModels
         private bool isMenuVisible = false;
         public bool IsMenuVisible
         {
-            get => isChatVisible;
+            get => isMenuVisible;
             set
             {
-                isChatVisible = value;
+                isMenuVisible = value;
                 OnPropertyChanged(nameof(IsMenuVisible));
             }
         }
@@ -136,6 +136,7 @@ namespace Tefichat.ViewModels
         public ICommand SendMessageCommand { get; set; }
         public ICommand ReadMessageCommand { get; set; }
         public ICommand ShowMenuCommand { get; set; }
+        public ICommand HideMenuCommand { get; set; }
 
         public MainVM()
         {
@@ -150,6 +151,7 @@ namespace Tefichat.ViewModels
             GetPrevMessagesCommand = new RelayCommand(async (o) => await GetPrevMessages(o));
             GetNextMessagesCommand = new RelayCommand(async (o) => await GetNextMessages(o));
             ShowMenuCommand = new RelayCommand((o) => ShowMenu());
+            HideMenuCommand = new RelayCommand((o) => HideMenu());
 
             // Подписка на обновления
             _telegramService.NewMessage += NewMessage;
@@ -362,6 +364,11 @@ namespace Tefichat.ViewModels
         private void ShowMenu()
         {
             IsMenuVisible = true;
+        }
+
+        private void HideMenu()
+        {
+            IsMenuVisible = false;
         }
     }
 }

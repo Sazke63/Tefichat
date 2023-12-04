@@ -19,6 +19,7 @@ namespace Tefichat.Views.Style.Window
             {
                 maximizeCaptionButton.Content = me.WindowState == WindowState.Maximized ? "2" : "1";
             }
+            me.MaxHeight = SystemParameters.WorkArea.Height + 14;
         }
 
         private void btnClose_Click(object sender, RoutedEventArgs e)
@@ -28,13 +29,18 @@ namespace Tefichat.Views.Style.Window
 
         private void btnMaxRestore_Click(object sender, RoutedEventArgs e)
         {
-            ((sender as FrameworkElement).TemplatedParent as System.Windows.Window)
-                .WindowState = (((sender as FrameworkElement).TemplatedParent as System.Windows.Window)
-                .WindowState == WindowState.Normal) ? WindowState.Maximized : WindowState.Normal;
+            var window = ((sender as FrameworkElement).TemplatedParent as System.Windows.Window);
+            if (window != null)
+                window.WindowState = window.WindowState == WindowState.Normal ? WindowState.Maximized : WindowState.Normal;
+
+            //((sender as FrameworkElement).TemplatedParent as System.Windows.Window)
+            //    .WindowState = (((sender as FrameworkElement).TemplatedParent as System.Windows.Window)
+            //    .WindowState == WindowState.Normal) ? WindowState.Maximized : WindowState.Normal;
         }
 
         private void btnMinimize_Click(object sender, RoutedEventArgs e)
         {
+            
             ((sender as FrameworkElement).TemplatedParent as System.Windows.Window)
                 .WindowState = WindowState.Minimized;
         }

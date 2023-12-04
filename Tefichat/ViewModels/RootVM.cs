@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using System.Windows.Input;
 using Tefichat.Base;
 using Tefichat.Services;
 
@@ -17,6 +18,18 @@ namespace Tefichat.ViewModels
                 currentVM = value; 
                 OnPropertyChanged(nameof(CurrentVM));
             } 
+        }
+
+        // Видимость окна меню
+        private bool isMenuVisible = false;
+        public bool IsMenuVisible
+        {
+            get => isMenuVisible;
+            set
+            {
+                isMenuVisible = value;
+                OnPropertyChanged(nameof(IsMenuVisible));
+            }
         }
 
         public RootVM()

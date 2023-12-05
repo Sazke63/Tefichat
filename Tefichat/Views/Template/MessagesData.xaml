@@ -35,8 +35,10 @@
                     </Grid.RowDefinitions>
 
                     <!-- Заголовок -->
-                    <Grid Grid.Column="0" Grid.Row="0">
-                        <TextBlock x:Name="Header" Text="{Binding From.Name}" Foreground="WhiteSmoke" Margin="12,6,0,0" FontSize="13" FontWeight="Regular"/>
+                    <Grid Grid.Column="0" Grid.Row="0" Margin="12,9,0,0">
+                        <TextBlock x:Name="Header" Text="{Binding From.Name}" Foreground="DeepPink" FontSize="13" FontWeight="Medium"/>
+                        <TextBlock x:Name="HeaderForward" Text="{Binding FwdFrom.From.Name}" 
+                                   Foreground="BlueViolet" FontSize="13" FontWeight="Medium"/>
                     </Grid>
                     
                     <!-- Фото -->
@@ -89,7 +91,7 @@
                                      Foreground="WhiteSmoke"
                                      TextWrapping="Wrap" 
                                      Grid.ColumnSpan="2"
-                                     Margin="12,9,12,0"
+                                     Margin="12,0,12,0"
                                      IsEnabled="False" 
                                      Panel.ZIndex="1"
                                      Grid.Column="0"
@@ -137,6 +139,12 @@
             </DataTrigger>
             <DataTrigger Binding="{Binding From.IsChannel}" Value="{x:Null}">
                 <Setter TargetName="Header" Property="Visibility" Value="Collapsed"/>
+            </DataTrigger>
+            <DataTrigger Binding="{Binding From.IsChannel}" Value="False">
+                <Setter TargetName="Header" Property="Visibility" Value="Collapsed"/>
+            </DataTrigger>
+            <DataTrigger Binding="{Binding FwdFrom}" Value="{x:Null}">
+                <Setter TargetName="HeaderForward" Property="Visibility" Value="Visible"/>
             </DataTrigger>
             <DataTrigger Binding="{Binding }">
                 <Setter TargetName="ReadIcon" Property="Visibility" Value="Visible"/>

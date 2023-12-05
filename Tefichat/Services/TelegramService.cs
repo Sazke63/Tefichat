@@ -91,25 +91,7 @@ namespace Tefichat.Services
         {
             data = await telegramClient.Messages_GetAllDialogs();
 
-            return data.dialogs.AsParallel().Select(d =>
-            {
-                switch (data.UserOrChat(d))
-                {
-                    case TL.User user when user.IsActive:
-                        {
-                            return new UserDialogModel((TL.Dialog)d, user);
-                        }
-                    case TL.Chat chat when chat.IsActive:
-                        {
-                            return new ChatDialogModel((TL.Dialog)d, chat);
-                        }
-                    case TL.Channel channel when channel.IsActive:
-                        {
-                            return new ChannelDialogModel((TL.Dialog)d, channel);
-                        }
-                }
-                return new DialogModel(new TL.Dialog());
-            }).Where(d => d.Peer != null).ToList();
+            return data.dialogs.AsParallel().Select(GetDialog).Where(d => d.Peer != null).ToList();
         }
 
         // Загрузка последнего сообщения всех чатов
@@ -193,6 +175,8 @@ namespace Tefichat.Services
                             //    message.Photos.Add(new PictureModel(msg.ID, msg.grouped_id, null, msg.media));
                             if (meAccount != null && msg.from_id != null && msg.from_id.ID == meAccount.ID)
                                 message.IsOriginNative = true;
+                            if (msg.fwd_from != null)
+                                message.FwdFrom = new ForwardHeaderModel(dialog, msg.fwd_from.channel_post);
                             AddMessage(message);
                                 
                             NoFoundGroup = false;
@@ -208,7 +192,7 @@ namespace Tefichat.Services
 
                     void AddMessage(MessageBaseModel mesAdd)
                     {
-                        if (dialog is ChannelDialogModel)
+                        if (dialog is ChannelDialogModel || dialog is ChatDialogModel)
                             mesAdd.From = dialog;
                         if (mode || !AddPlus)
                             messages.Add(mesAdd);
@@ -243,6 +227,27 @@ namespace Tefichat.Services
                 case ChannelDialogModel channel: return new InputPeerChannel(dialog.Peer.ID, channel.AccessHash);
             }
             return null;
+        }
+
+        // Получение диалога
+        private DialogModel GetDialog(DialogBase dialog)
+        {
+            switch (data.UserOrChat(dialog))
+            {
+                case TL.User user when user.IsActive:
+                    {
+                        return new UserDialogModel((Dialog)dialog, user);
+                    }
+                case TL.Chat chat when chat.IsActive:
+                    {
+                        return new ChatDialogModel((Dialog)dialog, chat);
+                    }
+                case TL.Channel channel when channel.IsActive:
+                    {
+                        return new ChannelDialogModel((Dialog)dialog, channel);
+                    }
+            }
+            return new DialogModel(new TL.Dialog());
         }
 
         // Проверка обновлений

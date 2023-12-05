@@ -46,8 +46,9 @@
                     <TextBlock Grid.Column="0" Text="{Binding Name}" 
                             HorizontalAlignment="Stretch"
                             Foreground="WhiteSmoke"
+                               FontSize="13"
                             Margin="0,4,20,0"
-                            FontWeight="Regular"/>
+                            FontWeight="Medium"/>
 
                 </Grid>
 

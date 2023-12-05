@@ -20,6 +20,8 @@ namespace Tefichat.Models
 
         public MessageMedia Media => Data.media;
 
+        public ForwardHeaderModel FwdFrom { get; set; }
+
         private DateTime date;
         public override DateTime Date
         {

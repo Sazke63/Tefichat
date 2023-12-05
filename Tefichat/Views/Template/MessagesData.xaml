@@ -36,7 +36,7 @@
 
                     <!-- Заголовок -->
                     <Grid Grid.Column="0" Grid.Row="0">
-                        <!--TextBlock Text="{Binding SelectedDialog.Name}" Foreground="WhiteSmoke" Margin="12,6,0,0" FontSize="14"/-->
+                        <TextBlock x:Name="Header" Text="{Binding From.Name}" Foreground="WhiteSmoke" Margin="12,6,0,0" FontSize="13" FontWeight="Regular"/>
                     </Grid>
                     
                     <!-- Фото -->
@@ -134,6 +134,9 @@
             </DataTrigger>
             <DataTrigger Binding="{Binding Photos}" Value="True">
                 <Setter TargetName="Time" Property="Panel.ZIndex" Value="1"/>
+            </DataTrigger>
+            <DataTrigger Binding="{Binding From.IsChannel}" Value="{x:Null}">
+                <Setter TargetName="Header" Property="Visibility" Value="Collapsed"/>
             </DataTrigger>
             <DataTrigger Binding="{Binding }">
                 <Setter TargetName="ReadIcon" Property="Visibility" Value="Visible"/>

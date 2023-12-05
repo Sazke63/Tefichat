@@ -11,7 +11,7 @@ namespace Tefichat.Models
     public class MessageBaseModel : ObservableObject
     {
         public int ID { get; set; }
-        public Peer From { get; set; }
+        public DialogBaseModel From { get; set; }
         public Peer Peer { get; set; }
         public MessageReplyHeaderBase ReplyTo { get; set; }
         public virtual DateTime Date { get; set; }
@@ -21,7 +21,7 @@ namespace Tefichat.Models
         public MessageBaseModel(MessageBase messageBase, long groupedId)
         {
             ID = messageBase.ID;
-            From = messageBase.From;
+            //From = messageBase.From;
             Peer = messageBase.Peer;
             ReplyTo = messageBase.ReplyTo;
             Date = messageBase.Date;

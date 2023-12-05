@@ -208,6 +208,8 @@ namespace Tefichat.Services
 
                     void AddMessage(MessageBaseModel mesAdd)
                     {
+                        if (dialog is ChannelDialogModel)
+                            mesAdd.From = dialog;
                         if (mode || !AddPlus)
                             messages.Add(mesAdd);
                         else

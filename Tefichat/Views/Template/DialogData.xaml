@@ -68,7 +68,7 @@
                 </Grid.RowDefinitions>
 
                 <TextBlock Grid.Row="0" Text="{Binding LastMessage.Date, StringFormat={}{0:t},ConverterCulture={}, Mode=TwoWay}"
-                            Foreground="DarkGray"
+                            Foreground="DarkGray" FontSize="13"
                             HorizontalAlignment="Right"
                             Margin="8,2,4,0"/>
 

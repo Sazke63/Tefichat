@@ -37,6 +37,7 @@
                     <!-- Заголовок -->
                     <Grid Grid.Column="0" Grid.Row="0" Margin="12,9,0,0">
                         <TextBlock x:Name="Header" Text="{Binding From.Name}" Foreground="DeepPink" FontSize="13" FontWeight="Medium"/>
+                        
                         <TextBlock x:Name="HeaderForward" Text="{Binding FwdFrom.From.Name}" 
                                    Foreground="BlueViolet" FontSize="13" FontWeight="Medium"/>
                     </Grid>
@@ -144,7 +145,7 @@
                 <Setter TargetName="Header" Property="Visibility" Value="Collapsed"/>
             </DataTrigger>
             <DataTrigger Binding="{Binding FwdFrom}" Value="{x:Null}">
-                <Setter TargetName="HeaderForward" Property="Visibility" Value="Visible"/>
+                <Setter TargetName="HeaderForward" Property="Visibility" Value="Collapsed"/>
             </DataTrigger>
             <DataTrigger Binding="{Binding }">
                 <Setter TargetName="ReadIcon" Property="Visibility" Value="Visible"/>

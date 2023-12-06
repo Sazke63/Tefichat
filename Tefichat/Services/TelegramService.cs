@@ -9,9 +9,9 @@ using System.Security.Principal;
 using System.Security.RightsManagement;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Automation.Peers;
 using Tefichat.Models;
 using Tefichat.Services.EventAgs;
-using Tefichat.Views.Controls;
 using TL;
 using WTelegram;
 
@@ -90,7 +90,7 @@ namespace Tefichat.Services
         public async Task<List<DialogModel>> GetAllDialogs()
         {
             data = await telegramClient.Messages_GetAllDialogs();
-
+            data.CollectUsersChats(Users, Chats);
             return data.dialogs.AsParallel().Select(GetDialog).Where(d => d.Peer != null).ToList();
         }
 
@@ -135,7 +135,7 @@ namespace Tefichat.Services
             if (dialog == null) return null;
 
             List<MessageBaseModel> messages = new List<MessageBaseModel>();
-            TL.InputPeer inputPeer = GetInputPeer(dialog);
+            InputPeer inputPeer = GetInputPeer(dialog);
             var limit = count > 100 ? 100 : count;
             MessageModel message = null;
             MessageServiceModel messageService = null;
@@ -145,7 +145,7 @@ namespace Tefichat.Services
             for (; ; ) //int offset_id = 0
             {
                 var mes = await telegramClient.Messages_GetHistory(inputPeer, offset_id, add_offset: add_offset, limit: limit);
-
+                mes.CollectUsersChats(Users, Chats);
                 if (mes.Messages.Length == 0) break;
 
                 var i = 0;
@@ -176,7 +176,8 @@ namespace Tefichat.Services
                             if (meAccount != null && msg.from_id != null && msg.from_id.ID == meAccount.ID)
                                 message.IsOriginNative = true;
                             if (msg.fwd_from != null)
-                                message.FwdFrom = new ForwardHeaderModel(dialog, msg.fwd_from.channel_post);
+                                message.FwdFrom = new ForwardHeaderModel(GetDialogInfo(msg.fwd_from.from_id), msg.fwd_from.channel_post);
+                                
                             AddMessage(message);
                                 
                             NoFoundGroup = false;
@@ -248,6 +249,44 @@ namespace Tefichat.Services
                     }
             }
             return new DialogModel(new TL.Dialog());
+        }
+
+        private DialogModel GetDialogInfo(Peer peer)
+        {
+            //InputPeer inputPeer = null;
+            if (peer == null) return null;
+
+            switch(peer)
+            {
+                case PeerUser puser:
+                    {
+                        var user = Users.SingleOrDefault(u => u.Value.ID == puser.ID).Value;
+                        return new UserDialogModel(new Dialog(), user);
+                    }
+                case PeerChat pchat:
+                    {
+                        var chat = (Chat)Chats.SingleOrDefault(ch => ch.Value.ID == pchat.ID).Value;
+                        return new ChatDialogModel(new Dialog(), chat);
+                    }
+                case PeerChannel pchannel:
+                    {
+                        var channel = (Channel)Chats.SingleOrDefault(ch => ch.Value.ID == pchannel.ID).Value;
+                        return new ChannelDialogModel(new Dialog(), channel);
+                    }
+                default:
+                    {
+                        MessageBox.Show("Not found");
+                        return null;
+                    }
+            }
+
+            //var peerDialogs = await telegramClient.Messages_GetPeerDialogs(inputPeer);
+
+            //if (peerDialogs.chats.Count > 0)
+            //    return peerDialogs.chats.Select(ch => new (ch));
+            //var res = peerDialogs.dialogs.Select(GetDialog).Where(d => d.Peer != null).ToList();
+
+            //return res.Count > 0 ? res[0] : null;
         }
 
         // Проверка обновлений

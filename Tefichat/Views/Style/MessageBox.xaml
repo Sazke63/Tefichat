@@ -33,7 +33,7 @@
 
                             <TextBlock VerticalAlignment="Center"
                                        HorizontalAlignment="Left"
-                                       Text="Write a message..."
+                                       Text="Пиши давай..."
                                        IsHitTestVisible="False"
                                        Foreground="Gray"
                                        Margin="10,0,0,0">

@@ -22,10 +22,11 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="53"/>
             <RowDefinition/>
-            <RowDefinition Height="42"/>
+            <RowDefinition MaxHeight="0"/>
+            <RowDefinition Height="46"/>
         </Grid.RowDefinitions>
 
-            <!-- Заголовок -->
+        <!-- Заголовок -->
         <Border Grid.Row="0" Background="#17212b">
             <Grid HorizontalAlignment="Stretch" Margin="10">
 
@@ -38,7 +39,7 @@
             </Grid>
         </Border>
 
-            <!-- Список сообщений -->
+        <!-- Список сообщений -->
         <Grid Grid.Row="1">
 
             <!--ItemContainerStyle="{DynamicResource ChatItem}"-->
@@ -64,11 +65,18 @@
             </ListBox>
 
         </Grid>
+        
+        <!-- Reply Box-->
+        <Grid Grid.Row="2" Background="#17212b" Visibility="Visible">
+            <Button Style="{StaticResource HideButtonHand}" HorizontalAlignment="Left">
+                <TextBox Style="{StaticResource ReplyBox}"/>
+            </Button>
+        </Grid>
 
         <!-- Отправка сообщений -->
-        <Grid Grid.Row="2" Background="#17212b">
+        <Grid Grid.Row="3" Background="#17212b">
 
-            <TextBox Grid.Column="0" x:Name="MessageBox" 
+            <TextBox x:Name="MessageBox" 
                     Style="{StaticResource MessageBox}"
                     Height="30" Margin="8,0,0,0"/>
             

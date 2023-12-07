@@ -45,9 +45,10 @@
                                     <ColumnDefinition/>
                                 </Grid.ColumnDefinitions>
                                 
-                                <TextBlock Grid.Column="0" Text="Переслано от " Foreground="BlueViolet" FontSize="13" FontWeight="Medium"/>
+                                <TextBlock Grid.Column="0" Text="Переслано из " Foreground="BlueViolet" FontSize="13" FontWeight="Medium"/>
                                 <TextBlock Grid.Column="1" x:Name="HeaderForward" Text="{Binding FwdFrom.From.Name}" 
-                                   Foreground="BlueViolet" FontSize="13" FontWeight="Medium"/>
+                                           Foreground="BlueViolet" FontSize="13" FontWeight="Medium"/>
+                                
                             </Grid>
                         </Button>
                         

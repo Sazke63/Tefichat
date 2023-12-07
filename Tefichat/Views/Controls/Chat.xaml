@@ -17,70 +17,69 @@
             </Style.Triggers>
         </Style>
     </UserControl.Resources>
-    
+
     <Grid Background="#0e1621">
         <Grid.RowDefinitions>
-            <RowDefinition Height="53"/>
-            <RowDefinition/>
-            <RowDefinition MaxHeight="0"/>
             <RowDefinition Height="46"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="{Binding ElementName=SendMsgPanel, Path=Width}"/>
         </Grid.RowDefinitions>
 
         <!-- Заголовок -->
-        <Border Grid.Row="0" Background="#17212b">
+        <Border Grid.Row="0" Background="#17212b" Height="53" VerticalAlignment="Top">
             <Grid HorizontalAlignment="Stretch" Margin="10">
 
                 <Label Content="{Binding SelectedDialog.Name}"
                            VerticalAlignment="Center"
                            Foreground="WhiteSmoke"
-                           FontWeight="Bold"
+                          FontWeight="Bold"
                            Margin="5,0,5,0"/>
 
             </Grid>
         </Border>
 
         <!-- Список сообщений -->
-        <Grid Grid.Row="1">
+        <!--ItemContainerStyle="{DynamicResource ChatItem}"-->
+        <ListBox ItemsSource="{Binding SelectedDialog.Messages}"
+                     SelectedItem="{Binding SelectMessage, Mode=TwoWay}"
+                     ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                     ItemTemplate="{DynamicResource MessagesDataTemplate}"
+                     ScrollViewer.VerticalScrollBarVisibility="Auto"
+                     ItemContainerStyle="{DynamicResource ChatItem}"
+                     ScrollViewer.CanContentScroll="False"
+                     ScrollViewer.ScrollChanged="MessageItems_ScrollChanged"
+                     ScrollViewer.IsDeferredScrollingEnabled="True"
+                     Background="Transparent"
+                     x:Name="MessageItems"
+                     BorderThickness="0"
+                     Margin="12,0,0,0"
+                     Grid.Row="1">
 
-            <!--ItemContainerStyle="{DynamicResource ChatItem}"-->
-            <ListBox ItemsSource="{Binding SelectedDialog.Messages}"
-                 SelectedItem="{Binding SelectMessage, Mode=TwoWay}"
-                 ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                 ItemTemplate="{DynamicResource MessagesDataTemplate}"
-                 ScrollViewer.VerticalScrollBarVisibility="Auto"
-                 ItemContainerStyle="{DynamicResource ChatItem}"
-                 ScrollViewer.CanContentScroll="False"
-                 ScrollViewer.ScrollChanged="MessageItems_ScrollChanged"
-                 ScrollViewer.IsDeferredScrollingEnabled="True"
-                 Background="Transparent"
-                 x:Name="MessageItems"
-                 BorderThickness="0"
-                 Margin="12,0,0,0">
-
-                <ListBox.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <VirtualizingStackPanel VerticalAlignment="Bottom"/>
-                    </ItemsPanelTemplate>
-                </ListBox.ItemsPanel>
-            </ListBox>
-
-        </Grid>
-        
-        <!-- Reply Box-->
-        <Grid Grid.Row="2" Background="#17212b" Visibility="Visible">
-            <Button Style="{StaticResource HideButtonHand}" HorizontalAlignment="Left">
-                <TextBox Style="{StaticResource ReplyBox}"/>
-            </Button>
-        </Grid>
+            <ListBox.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <VirtualizingStackPanel VerticalAlignment="Bottom"/>
+                </ItemsPanelTemplate>
+            </ListBox.ItemsPanel>
+        </ListBox>
 
         <!-- Отправка сообщений -->
-        <Grid Grid.Row="3" Background="#17212b">
+        <StackPanel Grid.Row="2" x:Name="SendMsgPanel" Background="#17212b" MaxHeight="96" VerticalAlignment="Bottom">
 
-            <TextBox x:Name="MessageBox" 
+            <!-- В ответ -->
+            <Button Grid.Row="0" x:Name="ReplyBtn" Style="{StaticResource HideButtonHand}" Background="DarkSeaGreen" Visibility="Collapsed" Height="46">
+                <Button.Template>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <TextBox Style="{StaticResource ReplyBox}"/>
+                    </ControlTemplate>
+                </Button.Template>
+            </Button>
+
+            <TextBox Grid.Row="1" x:Name="MessageBox"
                     Style="{StaticResource MessageBox}"
-                    Height="30" Margin="8,0,0,0"/>
-            
-        </Grid>
+                    Height="46" Margin="8,0,0,0"/>
+
+        </StackPanel>
+
     </Grid>
 
 </UserControl>

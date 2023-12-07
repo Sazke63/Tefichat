@@ -9,7 +9,7 @@ namespace Tefichat.Models
         public int ID { get; set; }
         public DialogBaseModel From { get; set; }
         public Peer Peer { get; set; }
-        public MessageReplyHeaderBase ReplyTo { get; set; }
+        public virtual MessageModel ReplyTo { get; set; }
         public virtual DateTime Date { get; set; }
         public long GroupedId { get; set; }
         public int TtlPeriod { get; set; }
@@ -19,7 +19,7 @@ namespace Tefichat.Models
             ID = messageBase.ID;
             //From = messageBase.From;
             Peer = messageBase.Peer;
-            ReplyTo = messageBase.ReplyTo;
+            //ReplyTo = messageBase.ReplyTo;
             Date = messageBase.Date;
             TtlPeriod = messageBase.TtlPeriod;
             GroupedId = groupedId;

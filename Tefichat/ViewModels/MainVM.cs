@@ -129,6 +129,17 @@ namespace Tefichat.ViewModels
             }
         }
 
+        private MessageModel replyTo;
+        public MessageModel ReplyTo
+        {
+            get => replyTo;
+            set
+            {
+                replyTo = value;
+                OnPropertyChanged(nameof(ReplyTo));
+            }
+        }
+
         // Команды
         public ICommand GetMessagesCommand { get; set; }
         public ICommand GetPrevMessagesCommand { get; set; }

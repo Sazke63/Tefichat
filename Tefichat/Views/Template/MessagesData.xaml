@@ -35,22 +35,33 @@
                     </Grid.RowDefinitions>
 
                     <!-- Заголовок -->
-                    <Grid Grid.Column="0" Grid.Row="0" Margin="12,9,0,0">
+                    <Grid Grid.Column="0" Grid.Row="0" Margin="12,9,0,0" Grid.ColumnSpan="2">
+                        
                         <TextBlock x:Name="Header" Text="{Binding From.Name}" Foreground="DeepPink" FontSize="13" FontWeight="Medium"/>
 
-                        <Button x:Name="HeaderForwardBtn" Style="{StaticResource HideButtonHand}" HorizontalAlignment="Left">
+                        <!-- Переслано -->
+                        <Button x:Name="HeaderForwardBtn" Style="{StaticResource HideButtonHand}" HorizontalAlignment="Left" Visibility="Collapsed">
                             <Grid>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition/>
                                     <ColumnDefinition/>
                                 </Grid.ColumnDefinitions>
-                                
-                                <TextBlock Grid.Column="0" Text="Переслано из " Foreground="BlueViolet" FontSize="13" FontWeight="Medium"/>
+
+                                <TextBlock Grid.Column="0" Text="Переслано из " Foreground="#a46ede" FontSize="13" FontWeight="Medium"/>
                                 <TextBlock Grid.Column="1" x:Name="HeaderForward" Text="{Binding FwdFrom.From.Name}" 
-                                           Foreground="BlueViolet" FontSize="13" FontWeight="Medium"/>
+                                           Foreground="#a46ede" FontSize="13" FontWeight="Medium"/>
                                 
                             </Grid>
                         </Button>
+
+                        <!-- В ответ -->
+                            <Button x:Name="ReplyBtn" Style="{StaticResource HideButtonHand}">
+                                <Button.Template>
+                                    <ControlTemplate TargetType="{x:Type Button}">
+                                        <TextBox Style="{StaticResource ReplyBoxInMessage}"/>
+                                    </ControlTemplate>
+                                </Button.Template>
+                            </Button>
                         
                     </Grid>
                     

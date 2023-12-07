@@ -30,7 +30,7 @@
                             </Grid.RowDefinitions>
 
                             <TextBlock Grid.Row="0" Text="В ответ Aleks"
-                                       Foreground="BlueViolet"
+                                       Foreground="#a46ede"
                                        FontWeight="Medium"
                                        Margin="4,6,0,0"
                                        FontSize="13"/>

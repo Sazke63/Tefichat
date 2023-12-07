@@ -216,6 +216,28 @@ namespace Tefichat.ViewModels
 
             messages.ForEach(m => SelectedDialog.Messages.Insert(0, m));
 
+            SelectedDialog.Messages.AsParallel().Where(m => m is MessageModel).ForAll(async m =>
+            {
+                if (m is MessageModel mes)
+                    if (mes.Data.reply_to is MessageReplyHeader mrh)
+                    {
+                        if (mrh != null)
+                        {
+                            var mesReply = SelectedDialog.Messages.SingleOrDefault(ms => ms.ID == mrh.reply_to_msg_id);
+                            if (mesReply != null)
+                            {
+                                mes.ReplyTo = mesReply;
+                            }
+                            else
+                            {
+                                var mesGet = await _telegramService.GetMessagesHistoryDialog(selectedDialog, mrh.reply_to_msg_id, 1);
+                                if (mesGet != null)
+                                    mesReply = mesGet[0];
+                            }
+                        }
+                    }
+            });
+
             //SelectMessage = SelectedDialog.Messages.SingleOrDefault(m => m.ID == lastMsgID);
             //SelectedDialog.Messages.ForAll(m =>
             //{

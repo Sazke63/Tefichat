@@ -39,7 +39,6 @@
         </Border>
 
         <!-- Список сообщений -->
-        <!--ItemContainerStyle="{DynamicResource ChatItem}"-->
         <ListBox ItemsSource="{Binding SelectedDialog.Messages}"
                      SelectedItem="{Binding SelectMessage, Mode=TwoWay}"
                      ScrollViewer.HorizontalScrollBarVisibility="Disabled"
@@ -66,7 +65,7 @@
         <StackPanel Grid.Row="2" x:Name="SendMsgPanel" Background="#17212b" MaxHeight="96" VerticalAlignment="Bottom">
 
             <!-- В ответ -->
-            <Button Grid.Row="0" x:Name="ReplyBtn" Style="{StaticResource HideButtonHand}" Background="DarkSeaGreen" Visibility="Collapsed" Height="46">
+            <Button Grid.Row="0" x:Name="ReplyBtn" Style="{StaticResource HideButtonHand}" Background="DarkSeaGreen" Visibility="Visible" Height="46">
                 <Button.Template>
                     <ControlTemplate TargetType="{x:Type Button}">
                         <TextBox Style="{StaticResource ReplyBox}"/>

@@ -6,7 +6,24 @@ namespace Tefichat.Models
 {
     public class MessageModel : MessageBaseModel
     {
-        private Message Data { get; set; }
+        public Message Data { get; set; }
+
+        public string FromName
+        {
+            get
+            {
+                if (From != null)
+                {
+                    switch (From)
+                    {
+                        case UserDialogModel user: return user.Name;
+                        case ChatDialogModel chat: return chat.Name;
+                        case ChannelDialogModel channel: return channel.Name;
+                    }                    
+                }
+                return From?.Peer.ID.ToString();
+            }
+        }
 
         public string Message
         {
@@ -20,7 +37,7 @@ namespace Tefichat.Models
 
         public MessageMedia Media => Data.media;
         public ForwardHeaderModel FwdFrom { get; set; }
-        public override MessageModel ReplyTo { get; set; }
+        public override MessageBaseModel ReplyTo { get; set; }
 
         private DateTime date;
         public override DateTime Date

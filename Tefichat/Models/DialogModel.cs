@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Tefichat.Base;
-using TL;
+﻿using TL;
 
 namespace Tefichat.Models
 {
@@ -33,9 +27,8 @@ namespace Tefichat.Models
             }
         }
 
-        public DialogModel(Dialog dialog) : base(dialog.peer, dialog.top_message)
+        public DialogModel(Dialog dialog, IPeerInfoModel entity) : base(entity, dialog.top_message)
         {
-            //Contact = contact;
             Read_inbox_max_id = dialog.read_inbox_max_id;
             Read_outbox_max_id = dialog.read_outbox_max_id;
             _unread_count = dialog.unread_count;

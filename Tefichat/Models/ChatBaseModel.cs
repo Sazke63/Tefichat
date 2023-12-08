@@ -1,21 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Tefichat.Base;
 using TL;
 
 namespace Tefichat.Models
 {
-    public class ChatBaseDialogModel : DialogModel
+    public class ChatBaseModel : ObservableObject, IPeerInfoModel
     {
+        public long ID { get; set; }
         public bool IsActive { get; set; }
+        public virtual long AccessHash { get; set; }
         public bool IsChannel { get; set; }
         public bool IsGroup => !IsChannel;
-        public string title { get; set; }
+        public string Title { get; set; }
 
-        private byte[] _photo;
-        public byte[] Photo
+        private byte[]? _photo;
+        public byte[]? Photo
         {
             get => _photo;
             set
@@ -25,11 +23,12 @@ namespace Tefichat.Models
             }
         }
 
-        public ChatBaseDialogModel(Dialog dialog, ChatBase chat) : base(dialog)
+        public ChatBaseModel(ChatBase chat)
         {
+            ID = chat.ID;
             IsActive = chat.IsActive;
             IsChannel = chat.IsChannel;
-            title = chat.Title;           
+            Title = chat.Title;
         }
     }
 }

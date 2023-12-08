@@ -11,7 +11,7 @@ namespace Tefichat.Models
 {
     public class DialogBaseModel : ObservableObject
     {
-        public Peer Peer { get; }
+        public IPeerInfoModel Entity { get; set; }
 
         private int _topMessage;
         public int TopMessage
@@ -35,8 +35,8 @@ namespace Tefichat.Models
             }
         }
 
-        private MessageBaseModel _lastMessage;
-        public MessageBaseModel LastMessage
+        private MessageBaseModel? _lastMessage;
+        public MessageBaseModel? LastMessage
         {
             get => _lastMessage; // messages.Count() != 0 ? messages.Last() : null;
             set
@@ -46,9 +46,9 @@ namespace Tefichat.Models
             }
         }
 
-        public DialogBaseModel(Peer peer, int topMessage)
+        public DialogBaseModel(IPeerInfoModel entity, int topMessage)
         {
-            Peer = peer;
+            Entity = entity;
             _topMessage = topMessage;
         }
     }

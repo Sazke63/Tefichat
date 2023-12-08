@@ -32,7 +32,7 @@
                                     <RowDefinition/>
                                 </Grid.RowDefinitions>
 
-                                <TextBlock Grid.Row="0" Text="{Binding ReplyTo.FromName}"
+                                <TextBlock Grid.Row="0" Text="{Binding ReplyTo.From.Name}"
                                            Foreground="#a46ede"
                                            FontWeight="Medium"
                                            Margin="8,3,0,0"

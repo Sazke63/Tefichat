@@ -1,5 +1,4 @@
 ﻿using System;
-using Tefichat.Base;
 using TL;
 
 namespace Tefichat.Models
@@ -8,22 +7,22 @@ namespace Tefichat.Models
     {
         public Message Data { get; set; }
 
-        public string FromName
-        {
-            get
-            {
-                if (From != null)
-                {
-                    switch (From)
-                    {
-                        case UserDialogModel user: return user.Name;
-                        case ChatDialogModel chat: return chat.Name;
-                        case ChannelDialogModel channel: return channel.Name;
-                    }                    
-                }
-                return From?.Peer.ID.ToString();
-            }
-        }
+        //public string FromName
+        //{
+        //    get
+        //    {
+        //        if (From != null)
+        //        {
+        //            switch (From)
+        //            {
+        //                case UserModel user: return user.Name;
+        //                case ChatModel chat: return chat.Name;
+        //                case ChannelModel channel: return channel.Name;
+        //            }                    
+        //        }
+        //        return From?.ID.ToString();
+        //    }
+        //}
 
         public string Message
         {
@@ -48,7 +47,7 @@ namespace Tefichat.Models
 
         public bool IsOriginNative { get; set; }
 
-        public MessageModel(Message msg, bool isOriginNative = false) : base(msg, msg.grouped_id)
+        public MessageModel(Message msg, IPeerInfoModel from = null, bool isOriginNative = false) : base(msg, from, msg.grouped_id)
         {
             Data = msg;
             Date = msg.date;

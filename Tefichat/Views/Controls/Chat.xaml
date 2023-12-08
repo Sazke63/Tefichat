@@ -29,7 +29,7 @@
         <Border Grid.Row="0" Background="#17212b" Height="53" VerticalAlignment="Top">
             <Grid HorizontalAlignment="Stretch" Margin="10">
 
-                <Label Content="{Binding SelectedDialog.Name}"
+                <Label Content="{Binding SelectedDialog.Entity.Name}"
                            VerticalAlignment="Center"
                            Foreground="WhiteSmoke"
                           FontWeight="Bold"
@@ -65,7 +65,7 @@
         <StackPanel Grid.Row="2" x:Name="SendMsgPanel" Background="#17212b" MaxHeight="96" VerticalAlignment="Bottom">
 
             <!-- В ответ -->
-            <Button Grid.Row="0" x:Name="ReplyBtn" Style="{StaticResource HideButtonHand}" Background="DarkSeaGreen" Visibility="Visible" Height="46">
+            <Button Grid.Row="0" x:Name="ReplyBtn" Style="{StaticResource HideButtonHand}" Background="DarkSeaGreen" Visibility="Collapsed" Height="46">
                 <Button.Template>
                     <ControlTemplate TargetType="{x:Type Button}">
                         <TextBox Style="{StaticResource ReplyBox}"/>

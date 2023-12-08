@@ -17,7 +17,7 @@ namespace Tefichat.Models
             }
         }
 
-        public MessageServiceModel(MessageService ms) : base(ms, 0)
+        public MessageServiceModel(MessageService ms) : base(ms, null, 0)
         {
             Data = ms;
             Message = ms.action.GetType().Name;

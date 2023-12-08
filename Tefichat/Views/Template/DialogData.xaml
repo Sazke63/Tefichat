@@ -43,7 +43,7 @@
                 <!--Name Chat-->
                 <Grid Grid.Row="0">
 
-                    <TextBlock Grid.Column="0" Text="{Binding Name}" 
+                    <TextBlock Grid.Column="0" Text="{Binding Entity.Name}" 
                             HorizontalAlignment="Stretch"
                             Foreground="WhiteSmoke"
                                FontSize="13"

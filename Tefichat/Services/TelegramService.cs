@@ -91,7 +91,7 @@ namespace Tefichat.Services
         {
             data = await telegramClient.Messages_GetAllDialogs();
             data.CollectUsersChats(Users, Chats);
-            return data.dialogs.AsParallel().Select(GetDialog).Where(d => d.Peer != null).ToList();
+            return data.dialogs.AsParallel().Select(GetDialog).Where(d => d.Entity.IsActive).ToList();
         }
 
         // Загрузка последнего сообщения всех чатов
@@ -118,13 +118,13 @@ namespace Tefichat.Services
         // Чтение сообщений
         public async Task<bool> ReadMessage(DialogModel dialog, int max_id)
         {
-            return await telegramClient.ReadHistory(GetInputPeer(dialog), max_id);
+            return await telegramClient.ReadHistory(GetInputPeer(dialog.Entity), max_id);
         }
 
         // Отправка сообщения
         public async Task<Message> SendMessage(DialogModel dialog, string text)
         {
-            InputPeer inputPeer = GetInputPeer(dialog);
+            InputPeer inputPeer = GetInputPeer(dialog.Entity);
             var answer = await telegramClient.SendMessageAsync(inputPeer, text);
             return answer;
         }
@@ -135,7 +135,7 @@ namespace Tefichat.Services
             if (dialog == null) return null;
 
             List<MessageBaseModel> messages = new List<MessageBaseModel>();
-            InputPeer inputPeer = GetInputPeer(dialog);
+            InputPeer inputPeer = GetInputPeer(dialog.Entity);
             var limit = count > 100 ? 100 : count;
             MessageModel message = null;
             MessageServiceModel messageService = null;
@@ -170,13 +170,13 @@ namespace Tefichat.Services
 
                         if (msg.grouped_id == 0 || NoFoundGroup)
                         {
-                            message = new MessageModel(msg);
+                            message = new MessageModel(msg, GetPeerInfo(msg.From ?? msg.Peer));
                             //if (msg.media != null)
                             //    message.Photos.Add(new PictureModel(msg.ID, msg.grouped_id, null, msg.media));
                             if (meAccount != null && msg.from_id != null && msg.from_id.ID == meAccount.ID)
                                 message.IsOriginNative = true;
                             if (msg.fwd_from != null)
-                                message.FwdFrom = new ForwardHeaderModel(GetDialogInfo(msg.fwd_from.from_id), msg.fwd_from.channel_post);
+                                message.FwdFrom = new ForwardHeaderModel(GetPeerInfo(msg.fwd_from.from_id), msg.fwd_from.channel_post);
                                 
                             AddMessage(message);
                                 
@@ -193,8 +193,9 @@ namespace Tefichat.Services
 
                     void AddMessage(MessageBaseModel mesAdd)
                     {
-                        if (dialog is ChannelDialogModel || dialog is ChatDialogModel)
-                            mesAdd.From = dialog;
+                        //if (dialog.Entity is ChannelModel || dialog.Entity is ChatModel)
+                        //    mesAdd.From = dialog.Entity;
+
                         if (mode || !AddPlus)
                             messages.Add(mesAdd);
                         else
@@ -219,13 +220,13 @@ namespace Tefichat.Services
         }
 
         // Получение InputPeer
-        private InputPeer GetInputPeer(DialogModel dialog)
+        private InputPeer GetInputPeer(IPeerInfoModel entity)
         {
-            switch (dialog)
+            switch (entity)
             {
-                case UserDialogModel user: return new InputPeerUser(dialog.Peer.ID, user.AccessHash);
-                case ChatDialogModel chat: return new InputPeerChat(dialog.Peer.ID);
-                case ChannelDialogModel channel: return new InputPeerChannel(dialog.Peer.ID, channel.AccessHash);
+                case UserModel user: return new InputPeerUser(user.ID, user.AccessHash);
+                case ChatModel chat: return new InputPeerChat(chat.ID);
+                case ChannelModel channel: return new InputPeerChannel(channel.ID, channel.AccessHash);
             }
             return null;
         }
@@ -235,23 +236,23 @@ namespace Tefichat.Services
         {
             switch (data.UserOrChat(dialog))
             {
-                case TL.User user when user.IsActive:
+                case User user when user.IsActive:
                     {
-                        return new UserDialogModel((Dialog)dialog, user);
+                        return new DialogModel((Dialog)dialog, new UserModel(user));
                     }
-                case TL.Chat chat when chat.IsActive:
+                case Chat chat when chat.IsActive:
                     {
-                        return new ChatDialogModel((Dialog)dialog, chat);
+                        return new DialogModel((Dialog)dialog, new ChatModel(chat));
                     }
-                case TL.Channel channel when channel.IsActive:
+                case Channel channel when channel.IsActive:
                     {
-                        return new ChannelDialogModel((Dialog)dialog, channel);
+                        return new DialogModel((Dialog)dialog, new ChannelModel(channel));
                     }
             }
-            return new DialogModel(new TL.Dialog());
+            return new DialogModel(new Dialog(), new ChannelModel(new Channel()));
         }
 
-        private DialogModel GetDialogInfo(Peer peer)
+        private IPeerInfoModel GetPeerInfo(Peer peer)
         {
             //InputPeer inputPeer = null;
             if (peer == null) return null;
@@ -261,17 +262,17 @@ namespace Tefichat.Services
                 case PeerUser puser:
                     {
                         var user = Users.SingleOrDefault(u => u.Value.ID == puser.ID).Value;
-                        return new UserDialogModel(new Dialog(), user);
+                        return new UserModel(user);
                     }
                 case PeerChat pchat:
                     {
                         var chat = (Chat)Chats.SingleOrDefault(ch => ch.Value.ID == pchat.ID).Value;
-                        return new ChatDialogModel(new Dialog(), chat);
+                        return new ChatModel(chat);
                     }
                 case PeerChannel pchannel:
                     {
                         var channel = (Channel)Chats.SingleOrDefault(ch => ch.Value.ID == pchannel.ID).Value;
-                        return new ChannelDialogModel(new Dialog(), channel);
+                        return new ChannelModel(channel);
                     }
                 default:
                     {

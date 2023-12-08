@@ -1,52 +1,50 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using TL;
 
 namespace Tefichat.Models
 {
-    public class ChatDialogModel : ChatBaseDialogModel
+    public class ChatModel : ChatBaseModel
     {
         public Chat Data { get; set; }
         public string Name
         {
-            get => title;
+            get => Title;
             set
             {
-                title = value;
+                Title = value;
                 OnPropertyChanged("Name");
             }
         }
 
-        //private int participants_count;
+        private int participantsCount;
         public int ParticipantsCount
         {
-            get => Data.participants_count;
+            get => participantsCount;
             set
             {
-                Data.participants_count = value;
+                participantsCount = value;
                 OnPropertyChanged("ParticipantsCount");
             }
         }
 
-        //private DateTime date;
+        private DateTime date;
         public DateTime Date
         {
-            get => Data.date;
+            get => date;
             set
             {
-                Data.date = value;
+                date = value;
                 OnPropertyChanged("Date");
             }
         }
 
         public int Version => Data.version;
 
-        public ChatDialogModel(Dialog dialog, Chat chat) : base(dialog, chat)
+        public ChatModel(Chat chat) : base(chat)
         {
             Data = chat;
+            participantsCount = chat.participants_count;
+            date = chat.date;
         }
     }
 }

@@ -75,9 +75,9 @@ namespace Tefichat.ViewModels
                     selectMessage = value;
                     if (!value.IsOriginNative)
                     {
-                        switch (selectedDialog)
+                        switch (selectedDialog.Entity)
                         {
-                            case ChannelDialogModel channel: MaxID = SelectedDialog.Read_inbox_max_id; break;
+                            case ChannelModel channel: MaxID = SelectedDialog.Read_inbox_max_id; break;
                             default: MaxID = SelectedDialog.Read_outbox_max_id; break;
                         }
 
@@ -188,7 +188,7 @@ namespace Tefichat.ViewModels
             {
                 Dialogs.AsParallel().ForAll(d =>
                 {
-                    var mes = messages.SingleOrDefault(m => m.Peer.ID == d.Peer.ID);
+                    var mes = messages.SingleOrDefault(m => m.Peer.ID == d.Entity.ID);
                     if (mes != null)
                     {
                         //d.Messages.Add(mes);
@@ -204,9 +204,9 @@ namespace Tefichat.ViewModels
 
             if (SelectedDialog.Messages.Count() >= 20) return;
 
-            var count = selectedDialog.Messages.Count();
+            //var count = selectedDialog.Messages.Count();
             List<MessageBaseModel> messages = new List<MessageBaseModel>();
-            int lastMsgID = selectedDialog is ChannelDialogModel ? SelectedDialog.Read_inbox_max_id + 1 : SelectedDialog.Read_outbox_max_id + 1;
+            int lastMsgID = selectedDialog.Entity is ChannelModel ? SelectedDialog.Read_inbox_max_id + 1 : SelectedDialog.Read_outbox_max_id + 1;
 
             if (selectedDialog != null && lastMsgID != 0)
             {
@@ -293,7 +293,7 @@ namespace Tefichat.ViewModels
             if (MesSend.id != 0)
             {
                 Message = "";
-                SelectedDialog.Messages.Add(new MessageModel(MesSend, true));
+                SelectedDialog.Messages.Add(new MessageModel(MesSend, isOriginNative: true));
             }
         }
 
@@ -301,7 +301,7 @@ namespace Tefichat.ViewModels
         {
             var result = await _telegramService.ReadMessage(SelectedDialog, selectMessage.ID);
 
-            if (result && SelectedDialog is ChannelDialogModel)
+            if (result && SelectedDialog.Entity is ChannelModel)
             {
                 SelectedDialog.Read_inbox_max_id = selectMessage.ID;
                 //SelectedDialog.Unread_count -= 1;
@@ -319,7 +319,7 @@ namespace Tefichat.ViewModels
         {
             if (Dialogs.Count == 0) return;
 
-            var dlg = Dialogs.SingleOrDefault(d =>d.Peer.ID == e.Message.Peer.ID);
+            var dlg = Dialogs.SingleOrDefault(d =>d.Entity.ID == e.Message.Peer.ID);
 
             if (dlg != null)
             {
@@ -355,44 +355,52 @@ namespace Tefichat.ViewModels
         {
             if (Dialogs.Count == 0) return;
 
-            var dlgs = Dialogs.SingleOrDefault(x => x.Peer.ID == e.ReadChannelInbox.channel_id);
-            dlgs.Read_inbox_max_id = e.ReadChannelInbox.max_id;
-            dlgs.Unread_count = e.ReadChannelInbox.still_unread_count;
+            var dlgs = Dialogs.SingleOrDefault(x => x.Entity.ID == e.ReadChannelInbox.channel_id);
+            if (dlgs != null)
+            {
+                dlgs.Read_inbox_max_id = e.ReadChannelInbox.max_id;
+                dlgs.Unread_count = e.ReadChannelInbox.still_unread_count;
+            }
         }
 
         private void ReadChannelOutbox(object sender, ReadChannelOutboxEventArgs e)
         {
             if (Dialogs.Count == 0) return;
 
-            var dlgs = Dialogs.SingleOrDefault(x => x.Peer.ID == e.ReadChannelOutbox.channel_id);
-            dlgs.Read_outbox_max_id = e.ReadChannelOutbox.max_id;
+            var dlgs = Dialogs.SingleOrDefault(x => x.Entity.ID == e.ReadChannelOutbox.channel_id);
+            if (dlgs != null)
+                dlgs.Read_outbox_max_id = e.ReadChannelOutbox.max_id;
         }
 
         private void ReadHistoryInbox(object sender, ReadHistoryInboxEventArgs e)
         {
             if (Dialogs.Count == 0) return;
 
-            var dlgs = Dialogs.SingleOrDefault(x => x.Peer.ID == e.ReadHistoryInbox.peer.ID);
-            dlgs.Read_inbox_max_id = e.ReadHistoryInbox.max_id;
-            dlgs.Unread_count = e.ReadHistoryInbox.still_unread_count;
+            var dlgs = Dialogs.SingleOrDefault(x => x.Entity.ID == e.ReadHistoryInbox.peer.ID);
+            if (dlgs != null)
+            {
+                dlgs.Read_inbox_max_id = e.ReadHistoryInbox.max_id;
+                dlgs.Unread_count = e.ReadHistoryInbox.still_unread_count;
+            }
         }
 
         private void ReadHistoryOutbox(object sender, ReadHistoryOutboxEventArgs e)
         {
             if (Dialogs.Count == 0) return;
 
-            var dlgs = Dialogs.SingleOrDefault(x => x.Peer.ID == e.ReadHistoryOutbox.peer.ID);
-            dlgs.Read_outbox_max_id = e.ReadHistoryOutbox.max_id;
+            var dlgs = Dialogs.SingleOrDefault(x => x.Entity.ID == e.ReadHistoryOutbox.peer.ID);
+            if (dlgs != null)
+                dlgs.Read_outbox_max_id = e.ReadHistoryOutbox.max_id;
         }
 
         private bool DoesCollectionContainName(object dialogName)
         {
             DialogModel dlgName = dialogName as DialogModel;
-            switch (dlgName)
+            switch (dlgName?.Entity)
             {
-                case UserDialogModel user: return user.Name.ToLower().Contains(SearchText.ToLower());
-                case ChatDialogModel chat: return chat.Name.ToLower().Contains(SearchText.ToLower());
-                case ChannelDialogModel channel: return channel.Name.ToLower().Contains(SearchText.ToLower());
+                case UserModel user: return user.Name.ToLower().Contains(SearchText.ToLower());
+                case ChatModel chat: return chat.Name.ToLower().Contains(SearchText.ToLower());
+                case ChannelModel channel: return channel.Name.ToLower().Contains(SearchText.ToLower());
             }
 
             return false;

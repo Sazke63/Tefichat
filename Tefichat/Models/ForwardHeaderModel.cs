@@ -9,10 +9,10 @@ namespace Tefichat.Models
 {
     public class ForwardHeaderModel : ObservableObject
     {
-        public DialogModel From { get; set; }
+        public IPeerInfoModel From { get; set; }
         public int ChannelPost { get; set; }
 
-        public ForwardHeaderModel(DialogModel from, int channelPost)
+        public ForwardHeaderModel(IPeerInfoModel from, int channelPost)
         {
             From = from;
             ChannelPost = channelPost;

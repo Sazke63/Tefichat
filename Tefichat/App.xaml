@@ -9,6 +9,7 @@
                 <ResourceDictionary Source="./Views/Style/Window/WindowStyle.xaml"/>
                 <ResourceDictionary Source="./Views/Style/Window/Buttons.xaml"/>
                 <ResourceDictionary Source="./Views/Style/ScrollBarStyle.xaml"/>
+                <ResourceDictionary Source="./Views/Style/ContextMenu.xaml"/>
                 <ResourceDictionary Source="./Views/Style/DialogCard.xaml"/>
                 <ResourceDictionary Source="./Views/Style/MessageBox.xaml"/>
                 <ResourceDictionary Source="./Views/Style/SearchBox.xaml"/>

@@ -34,13 +34,9 @@
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
 
-                <Button Grid.Column="0" Name="Menu" Background="#17212b" BorderThickness="0" Margin="10">
+                <Button Grid.Column="0" Name="Menu" Background="#17212b" BorderThickness="0" Margin="10" Command="{Binding ShowMenuCommand}">
                     <!--Image Source="../Images/menu_icon.png" Margin="5"/-->
-                    <i:Interaction.Triggers>
-                        <i:EventTrigger EventName="Click">
-                            <i:InvokeCommandAction Command="{Binding ShowMenuCommand}"/>
-                        </i:EventTrigger>
-                    </i:Interaction.Triggers>
+
                 </Button>
 
                 <TextBox Grid.Column="1" Style="{StaticResource SearchBox}" Margin="0,9,10,9"/>

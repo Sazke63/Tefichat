@@ -10,6 +10,7 @@ using System.Security.RightsManagement;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Data;
 using System.Windows.Input;
 using Tefichat.Base;
@@ -146,6 +147,8 @@ namespace Tefichat.ViewModels
         public ICommand GetNextMessagesCommand { get; set; }
         public ICommand SendMessageCommand { get; set; }
         public ICommand ReadMessageCommand { get; set; }
+        public ICommand ReplyToCommand { get; set; }
+        public ICommand CancelReplyToCommand { get; set; }
         public ICommand ShowMenuCommand { get; set; }
         public ICommand HideMenuCommand { get; set; }
 
@@ -161,6 +164,8 @@ namespace Tefichat.ViewModels
             GetMessagesCommand = new RelayCommand(async (o) => await GetMessages(o));
             GetPrevMessagesCommand = new RelayCommand(async (o) => await GetPrevMessages(o));
             GetNextMessagesCommand = new RelayCommand(async (o) => await GetNextMessages(o));
+            ReplyToCommand = new RelayCommand((o) => ReplyToSet());
+            CancelReplyToCommand = new RelayCommand((o) => CancelReplyToSet());
             ShowMenuCommand = new RelayCommand((o) => ShowMenu());
             HideMenuCommand = new RelayCommand((o) => HideMenu());
 
@@ -314,6 +319,16 @@ namespace Tefichat.ViewModels
             }
         }
 
+        private void ReplyToSet()
+        {
+            ReplyTo = SelectMessage;
+        }
+
+        private void CancelReplyToSet()
+        {
+            ReplyTo = null;
+        }
+
         // Методы для обработки обновлений
         private void NewMessage(object Sender, NewMessageEventArgs e)
         {
@@ -331,10 +346,13 @@ namespace Tefichat.ViewModels
                     }
                     else
                     {
-                        if (e.Message.Message != "")
+                        if (e.Message is MessageModel mm)
                         {
-                            GroupID = e.Message.GroupedId;
-                            dlg.Messages.Add(e.Message);
+                            if (mm.Message != "")
+                            {
+                                GroupID = e.Message.GroupedId;
+                                dlg.Messages.Add(e.Message);
+                            }
                         }
                         else
                         {
@@ -344,8 +362,9 @@ namespace Tefichat.ViewModels
                         }
                     }
                 }
-                if (!e.Message.IsOriginNative)
-                    dlg.Unread_count += 1;
+                if (e.Message is MessageModel mmi)
+                    if (!mmi.IsOriginNative)
+                        dlg.Unread_count += 1;
 
                 dlg.LastMessage = e.Message;
             }
@@ -391,6 +410,33 @@ namespace Tefichat.ViewModels
             var dlgs = Dialogs.SingleOrDefault(x => x.Entity.ID == e.ReadHistoryOutbox.peer.ID);
             if (dlgs != null)
                 dlgs.Read_outbox_max_id = e.ReadHistoryOutbox.max_id;
+        }
+
+        private void UpdChannel(object sender, ChannelEventArgs e)
+        {
+            if (Dialogs.Count == 0) return;
+
+            var dlgs = Dialogs.SingleOrDefault(x => x.Entity.ID == e.UpdateChannel.channel_id);
+            if (dlgs != null)
+                dlgs.Entity.ID = e.UpdateChannel.channel_id;
+        }
+
+        private void UpdChat(object sender, ChatEventArgs e)
+        {
+            if (Dialogs.Count == 0) return;
+
+            var dlgs = Dialogs.SingleOrDefault(x => x.Entity.ID == e.UpdateChat.chat_id);
+            if (dlgs != null)
+                dlgs.Entity.ID = e.UpdateChat.chat_id;
+        }
+
+        private void UpdUser(object sender, UserEventArgs e)
+        {
+            if (Dialogs.Count == 0) return;
+
+            var dlgs = Dialogs.SingleOrDefault(x => x.Entity.ID == e.UpdateUser.user_id);
+            if (dlgs != null)
+                dlgs.Entity.ID = e.UpdateUser.user_id;
         }
 
         private bool DoesCollectionContainName(object dialogName)

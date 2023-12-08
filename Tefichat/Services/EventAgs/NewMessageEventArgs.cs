@@ -5,8 +5,8 @@ namespace Tefichat.Services.EventAgs
 {
     public class NewMessageEventArgs : EventArgs
     {
-        public MessageModel Message { get; }
-        public NewMessageEventArgs(MessageModel message)
+        public MessageBaseModel Message { get; }
+        public NewMessageEventArgs(MessageBaseModel message)
         {
             Message = message;
         }

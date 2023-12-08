@@ -12,8 +12,8 @@
 
             <Border HorizontalAlignment="Left"
                     x:Name="MessageBorder"
-                    BorderBrush="#17212b"
-                    Background="#17212b"
+                    BorderBrush="#182533"
+                    Background="#182531"
                     BorderThickness="0"
                     CornerRadius="18"
                     Grid.Column="0"
@@ -41,14 +41,14 @@
                         <TextBlock x:Name="Header" Text="{Binding From.Name}" Foreground="DeepPink" FontSize="13" FontWeight="Medium"/>
 
                         <!-- В ответ -->
-                            <Button x:Name="ReplyBtn" Style="{StaticResource HideButtonHand}">
-                                <Button.Template>
-                                    <ControlTemplate TargetType="{x:Type Button}">
-                                        <TextBox Style="{StaticResource ReplyBoxInMessage}"/>
-                                    </ControlTemplate>
-                                </Button.Template>
-                            </Button>
-                        
+                        <Button x:Name="ReplyBtn" Style="{StaticResource HideButtonHand}">
+                            <Button.Template>
+                                <ControlTemplate TargetType="{x:Type Button}">
+                                    <TextBox Style="{StaticResource ReplyBoxInMessage}"/>
+                                </ControlTemplate>
+                            </Button.Template>
+                        </Button>
+
                     </Grid>
 
 
@@ -90,7 +90,7 @@
                                  BorderThickness="0"
                                  Margin="-1,-1,-1,-1"
                                  Visibility="Collapsed">
-                            
+
                             <ListBox.ItemTemplate>
                                 <DataTemplate>
                                     <Grid>

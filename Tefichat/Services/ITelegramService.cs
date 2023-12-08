@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Tefichat.Models;
 using Tefichat.Services.EventAgs;
@@ -17,6 +15,10 @@ namespace Tefichat.Services
         event EventHandler<ReadChannelOutboxEventArgs> ReadChannelOutbox;
         event EventHandler<ReadHistoryInboxEventArgs> ReadHistoryInbox;
         event EventHandler<ReadHistoryOutboxEventArgs> ReadHistoryOutbox;
+        event EventHandler<ChannelEventArgs> UpdChannel;
+        event EventHandler<ChatEventArgs> UpdChat;
+        event EventHandler<UserStatusEventArgs> UpdUserStatus;
+        event EventHandler<UserEventArgs> UpdUser;
 
         bool HasLogin { get; }
         Task CheckLogin();

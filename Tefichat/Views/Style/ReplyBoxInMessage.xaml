@@ -39,7 +39,7 @@
                                            FontSize="13"/>
 
                                 <TextBlock Grid.Row="1" Text="{Binding ReplyTo.Message}" 
-                                           Margin="8,0,0,5" FontSize="13"
+                                           Margin="8,0,6,5" FontSize="13"
                                            Foreground="WhiteSmoke"/>
 
                             </Grid>

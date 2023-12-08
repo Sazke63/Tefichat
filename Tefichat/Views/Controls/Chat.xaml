@@ -59,19 +59,22 @@
                     <VirtualizingStackPanel VerticalAlignment="Bottom"/>
                 </ItemsPanelTemplate>
             </ListBox.ItemsPanel>
+
+            <ListBox.ContextMenu>
+                <ContextMenu Style="{StaticResource ContextMenuStyle}" FontSize="13">
+                    <MenuItem Header="Ответить" Height="32" BorderThickness="0" Command="{Binding ReplyToCommand}"/>
+                    <MenuItem Header="Команда 1" Height="32" BorderThickness="0" Visibility="Collapsed"/>
+                </ContextMenu>
+            </ListBox.ContextMenu>
         </ListBox>
 
         <!-- Отправка сообщений -->
         <StackPanel Grid.Row="2" x:Name="SendMsgPanel" Background="#17212b" MaxHeight="96" VerticalAlignment="Bottom">
 
             <!-- В ответ -->
-            <Button Grid.Row="0" x:Name="ReplyBtn" Style="{StaticResource HideButtonHand}" Background="DarkSeaGreen" Visibility="Collapsed" Height="46">
-                <Button.Template>
-                    <ControlTemplate TargetType="{x:Type Button}">
-                        <TextBox Style="{StaticResource ReplyBox}"/>
-                    </ControlTemplate>
-                </Button.Template>
-            </Button>
+
+            <TextBox Grid.Row="0" Style="{StaticResource ReplyBox}"/>
+
 
             <TextBox Grid.Row="1" x:Name="MessageBox"
                     Style="{StaticResource MessageBox}"

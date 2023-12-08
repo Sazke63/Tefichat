@@ -38,6 +38,10 @@ namespace Tefichat.Services
         public event EventHandler<ReadChannelOutboxEventArgs> ReadChannelOutbox;
         public event EventHandler<ReadHistoryInboxEventArgs> ReadHistoryInbox;
         public event EventHandler<ReadHistoryOutboxEventArgs> ReadHistoryOutbox;
+        public event EventHandler<ChannelEventArgs> UpdChannel;
+        public event EventHandler<ChatEventArgs> UpdChat;
+        public event EventHandler<UserStatusEventArgs> UpdUserStatus;
+        public event EventHandler<UserEventArgs> UpdUser;
 
         public bool HasLogin { get; set; } = false;
 
@@ -293,7 +297,7 @@ namespace Tefichat.Services
         // Проверка обновлений
         private async Task TelegramClient_OnUpdate(IObject arg)
         {
-            if (!(arg is UpdatesBase updates)) return;
+            if (!(arg is UpdatesBase updates) || telegramClient.User == null) return;
             updates.CollectUsersChats(Users, Chats);
 
             foreach (var update in updates.UpdateList)
@@ -330,9 +334,12 @@ namespace Tefichat.Services
                     case UpdateReadChannelOutbox urco: ReadChannelOutbox(this, new ReadChannelOutboxEventArgs(urco)); break;
                     case UpdateReadHistoryInbox urhi: ReadHistoryInbox(this, new ReadHistoryInboxEventArgs(urhi)); break;
                     case UpdateReadHistoryOutbox urho: ReadHistoryOutbox(this, new ReadHistoryOutboxEventArgs(urho)); break;
-                    //case UpdateChannel upch: UpdChannel(this, new ChannelEventArgs(upch)); break;
-                    //case UpdateChat upct: UpdChat(this, new ChatEventArgs(upct)); break;
-                    //case UpdateUser upus: UpdUser(this, new UserEventArgs(upus)); break;
+                    case UpdateChannelMessageViews ucmv: break;
+                    case UpdateChannel upch: UpdChannel(this, new ChannelEventArgs(upch)); break;
+                    case UpdateChat upct: UpdChat(this, new ChatEventArgs(upct)); break;
+                    case UpdateUserStatus uus: break;
+                    case UpdateUserName uun: break;
+                    case UpdateUser upus: UpdUser(this, new UserEventArgs(upus)); break;
                     default: break;
                 }
             }

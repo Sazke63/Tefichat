@@ -78,7 +78,7 @@
 
             <TextBox Grid.Row="1" x:Name="MessageBox"
                     Style="{StaticResource MessageBox}"
-                    Height="46" Margin="8,0,0,0"/>
+                    Height="46"/>
 
         </StackPanel>
 

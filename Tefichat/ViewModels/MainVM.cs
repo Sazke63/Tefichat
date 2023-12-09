@@ -1,4 +1,5 @@
-﻿using Stfu.Linq;
+﻿using Microsoft.Win32;
+using Stfu.Linq;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -6,6 +7,7 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Reflection.Metadata;
+using System.Security.Cryptography;
 using System.Security.RightsManagement;
 using System.Text;
 using System.Threading;
@@ -52,6 +54,18 @@ namespace Tefichat.ViewModels
             }
         }
 
+        // Видимость окна отправки медиа
+        private bool isSendMediaVisible = false;
+        public bool IsSendMediaVisible
+        {
+            get => isSendMediaVisible;
+            set
+            {
+                isSendMediaVisible = value;
+                OnPropertyChanged(nameof(IsSendMediaVisible));
+            }
+        }
+
         public ObservableCollection<DialogModel> Dialogs { get; set; }
 
         private DialogModel selectedDialog;
@@ -86,7 +100,7 @@ namespace Tefichat.ViewModels
                         {
                             ReadMessageCommand.CanExecute(null);
                             ReadMessageCommand.Execute(null);
-                        }                       
+                        }
                     }
 
                     if (SelectMessage.ID == selectedDialog.Messages.Last().ID && MaxID < selectedDialog.TopMessage - 1)
@@ -130,6 +144,17 @@ namespace Tefichat.ViewModels
             }
         }
 
+        private string path;
+        public string Path
+        {
+            get => path;
+            set
+            {
+                path = value;
+                OnPropertyChanged(nameof(Path));
+            }
+        }
+
         private MessageModel replyTo;
         public MessageModel ReplyTo
         {
@@ -145,10 +170,13 @@ namespace Tefichat.ViewModels
         public ICommand GetMessagesCommand { get; set; }
         public ICommand GetPrevMessagesCommand { get; set; }
         public ICommand GetNextMessagesCommand { get; set; }
+        public ICommand SendMediaMessageCommand { get; set; }
         public ICommand SendMessageCommand { get; set; }
         public ICommand ReadMessageCommand { get; set; }
         public ICommand ReplyToCommand { get; set; }
         public ICommand CancelReplyToCommand { get; set; }
+        public ICommand SelectFileCommand { get; set; }
+        public ICommand CancelSelectFileCommand { get; set; }
         public ICommand ShowMenuCommand { get; set; }
         public ICommand HideMenuCommand { get; set; }
 
@@ -159,11 +187,14 @@ namespace Tefichat.ViewModels
             SearchCollectionViewSource = new CollectionViewSource { Source = Dialogs }.View;
             //SearchCollectionViewSource.SortDescriptions.Add(new SortDescription("LastMessage.Date", ListSortDirection.Ascending));
             //GetMessagesCommand = new RelayCommand(async(o) => await GetMessages(o));
+            SendMediaMessageCommand = new RelayCommand(async (o) => await SendMediaMessage(o));
             SendMessageCommand = new RelayCommand(async (o) => await SendMessage(o));
             ReadMessageCommand = new RelayCommand(async (o) => await ReadMessage(o));
             GetMessagesCommand = new RelayCommand(async (o) => await GetMessages(o));
             GetPrevMessagesCommand = new RelayCommand(async (o) => await GetPrevMessages(o));
             GetNextMessagesCommand = new RelayCommand(async (o) => await GetNextMessages(o));
+            SelectFileCommand = new RelayCommand((o) => SelectFile());
+            CancelSelectFileCommand = new RelayCommand((o) => CancelSelectFile());
             ReplyToCommand = new RelayCommand((o) => ReplyToSet());
             CancelReplyToCommand = new RelayCommand((o) => CancelReplyToSet());
             ShowMenuCommand = new RelayCommand((o) => ShowMenu());
@@ -290,6 +321,20 @@ namespace Tefichat.ViewModels
             //});
         }
 
+        private async Task SendMediaMessage(object o)
+        {
+            if (message == null || Path == "") return;
+
+            var MesSend = await _telegramService.SendMediaMessage(selectedDialog, message, Path);
+            if (MesSend.id != 0)
+            {
+                Message = "";
+                SelectedDialog.Messages.Add(new MessageModel(MesSend, isOriginNative: true));
+            }
+
+            if (IsSendMediaVisible) IsSendMediaVisible = false;
+        }
+
         private async Task SendMessage(object o)
         {
             if (message is null) return;
@@ -327,6 +372,26 @@ namespace Tefichat.ViewModels
         private void CancelReplyToSet()
         {
             ReplyTo = null;
+        }
+
+        private void SelectFile()
+        {
+            var openFileDialog = new OpenFileDialog();
+            openFileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+            openFileDialog.Filter = "All files (*.*)|*.*";
+            openFileDialog.Title = "Выбор файлов";
+            openFileDialog.Multiselect = false;
+            if (openFileDialog.ShowDialog() == true)
+            {
+                Path = openFileDialog.FileName;
+            }
+
+            IsSendMediaVisible = true;
+        }
+
+        private void CancelSelectFile()
+        {
+            IsSendMediaVisible = false;
         }
 
         // Методы для обработки обновлений

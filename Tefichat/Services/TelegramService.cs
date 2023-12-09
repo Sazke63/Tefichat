@@ -54,6 +54,8 @@ namespace Tefichat.Services
 
         public static TelegramService GetInstance() => telegramService;
 
+        public void Dispose() => telegramClient.Dispose();
+
         public async Task CheckLogin()
         {
             if (!string.IsNullOrEmpty(phoneNumber))
@@ -130,6 +132,15 @@ namespace Tefichat.Services
         {
             InputPeer inputPeer = GetInputPeer(dialog.Entity);
             var answer = await telegramClient.SendMessageAsync(inputPeer, text);
+            return answer;
+        }
+
+        // Отправка медиа сообщения
+        public async Task<Message> SendMediaMessage(DialogModel dialog, string caption, string path)
+        {
+            InputPeer inputPeer = GetInputPeer(dialog.Entity);
+            var inputFile = await telegramClient.UploadFileAsync(path);
+            var answer = await telegramClient.SendMediaAsync(inputPeer, caption, inputFile);
             return answer;
         }
 

@@ -12,10 +12,13 @@
 
                         <Grid>
                             <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="46"/>
                                 <ColumnDefinition/>
                                 <ColumnDefinition Width="42"/>
                             </Grid.ColumnDefinitions>
-                            
+
+                            <Button Grid.Column="0" Content="~" Style="{StaticResource CancelButton}" FontSize="20" Command="{Binding SelectFileCommand}"/>
+
                             <TextBox Text ="{Binding Message, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                      VerticalContentAlignment="Center"
                                      HorizontalAlignment="Stretch"
@@ -25,7 +28,8 @@
                                      x:Name="MessageBox"
                                      TextWrapping="Wrap"
                                      BorderThickness="0"
-                                     Margin="8,0,0,0">
+                                     Margin="0,0,0,0"
+                                     Grid.Column="1">
                                 <TextBox.InputBindings>
                                     <KeyBinding Command="{Binding SendMessageCommand}" Key="Return"/>
                                 </TextBox.InputBindings>
@@ -36,7 +40,8 @@
                                        Text="Пиши давай..."
                                        IsHitTestVisible="False"
                                        Foreground="Gray"
-                                       Margin="10,0,0,0">
+                                       Margin="2,0,0,0"
+                                       Grid.Column="1">
                                 <TextBlock.Style>
                                     <Style TargetType="TextBlock">
                                         <Setter Property="Visibility" Value="Collapsed"/>
@@ -50,8 +55,7 @@
                             </TextBlock>
 
                             <Button Grid.Column="2" x:Name="btnSendMessage" 
-                                    Content=">" BorderThickness="0" Margin="0,-6"
-                                    Background="Transparent" Foreground="WhiteSmoke" />
+                                    Content="y" FontSize="20" Margin="0,-6" Style="{StaticResource CancelButton}"/>
                         </Grid>
 
                     </Border>

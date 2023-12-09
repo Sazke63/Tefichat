@@ -54,6 +54,11 @@ namespace Tefichat.ViewModels
             } 
         }
 
+        public void Close()
+        {
+            _telegramService.Dispose();
+        }
+
         private void _telegramService_Login(object? sender, System.EventArgs e)
         {
             if (_telegramService.HasLogin)

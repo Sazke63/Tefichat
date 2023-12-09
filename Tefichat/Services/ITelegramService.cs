@@ -21,12 +21,14 @@ namespace Tefichat.Services
         event EventHandler<UserEventArgs> UpdUser;
 
         bool HasLogin { get; }
+        void Dispose();
         Task CheckLogin();
         Task Authorization(string loginInfo);
         Task<List<DialogModel>> GetAllDialogs();
         Task<List<MessageBaseModel>> GetLastMessages();
         Task<bool> ReadMessage(DialogModel dialog, int max_id);
         Task<Message> SendMessage(DialogModel dialog, string text);
+        Task<Message> SendMediaMessage(DialogModel dialog, string caption, string path);
         Task<List<MessageBaseModel>> GetMessagesHistoryDialog(DialogModel dialog, int offset_id = 0, int add_offset = 0, int count = 20, bool mode = false);
     }
 }

@@ -18,14 +18,19 @@
         <DataTemplate DataType="{x:Type vm:MenuVM}">
             <view:Menu/>
         </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:SendMediaVM}">
+            <view:SendMedia/>
+        </DataTemplate>
 
         <BooleanToVisibilityConverter x:Key="BoolToVisMenu"/>
+        <BooleanToVisibilityConverter x:Key="BoolToVisSendMedia"/>
 
     </UserControl.Resources>
 
     <Grid>
         <view:Home/>
         <view:Menu Visibility="{Binding IsMenuVisible, Converter={StaticResource BoolToVisMenu}}"/>
+        <view:SendMedia Visibility="{Binding IsSendMediaVisible, Converter={StaticResource BoolToVisSendMedia}}"/>
     </Grid>
 
 </UserControl>

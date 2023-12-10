@@ -11,7 +11,7 @@
                 <ControlTemplate TargetType="{x:Type TextBox}">
 
                     <Border CornerRadius="6" Background="#2a3149" 
-                            BorderThickness="0" Margin="0,3,11,4">
+                            BorderThickness="0" Margin="12,12,11,4">
 
                         <Grid>
                             <Grid.ColumnDefinitions>

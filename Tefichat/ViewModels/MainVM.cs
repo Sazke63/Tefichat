@@ -17,6 +17,7 @@ using System.Windows.Data;
 using System.Windows.Input;
 using Tefichat.Base;
 using Tefichat.Models;
+using Tefichat.Models.Media;
 using Tefichat.Services;
 using Tefichat.Services.EventAgs;
 using Tefichat.Views.Controls;
@@ -274,12 +275,92 @@ namespace Tefichat.ViewModels
                     }
             });
 
+            // Получение фото к сообщениям
+            SelectedDialog.Messages.AsParallel().ForAll(async m =>
+            {
+                if (m is MessageModel mm)
+                {
+                    if (mm.Data.media != null)
+                    {
+                        if (mm.Media is MediaPhotoModel mpm)
+                        {
+                            mpm.GetGrid();
+                            mpm.Photos.ForAll(async (p) =>
+                            {
+                                p.Picture = await _telegramService.DownloadPhoto(p.Data);
+                            });
+
+                            //foreach (var photo in mpm.Photos)
+                            //{
+                                //photo = await _telegramService.DownloadPhoto(photo.MediaData);
+                                //string Path = @"C:\Users\$dmin\Pictures\Test\";
+                                //File.WriteAllBytes(Path + photo.ID + ".jpg", photo.Picture);
+                            //}
+                        }
+                        //m.Photos.Add(new PictureModel(m.ID, 0, await telegramService.DownloadPhoto(m.media)));
+                    }
+                }
+            });
+
             //SelectMessage = SelectedDialog.Messages.SingleOrDefault(m => m.ID == lastMsgID);
             //SelectedDialog.Messages.ForAll(m =>
             //{
             //    string path = @"C:\Users\Sazke\Documents\meshistiryafter.txt";
             //    File.AppendAllTextAsync(path, m.ID.ToString() + "\n");
             //});
+        }
+
+        private async Task GetProfilePhoto()
+        {
+            //Dialogs.AsParallel().ForAll(async c =>
+            //{
+            //    switch (c.Entity)
+            //    {
+            //        case UserModel user:
+            //            {
+            //                if (user.Avatar != null)
+            //                {
+            //                    var photo = await _telegramService.GetProfilePhoto(new TL.User
+            //                    {
+            //                        id = user.ID,
+            //                        access_hash = user.AccessHash,
+            //                        photo = user.avatar
+            //                    });
+            //                    user.Avatar = photo;
+            //                }
+            //                break;
+            //            }
+            //        case ChatModel chat:
+            //            {
+            //                if (chat.Photo != null)
+            //                {
+            //                    var photo = await _telegramService.GetProfilePhoto(new TL.Chat
+            //                    {
+            //                        id = chat.ID,
+            //                        photo = chat.Photo
+            //                    });
+            //                    chat.Photo = photo;
+            //                }
+            //                break;
+            //            }
+            //        case ChannelModel channel:
+            //            {
+            //                if (channel.Photo != null)
+            //                {
+            //                    var photo = await _telegramService.GetProfilePhoto(new TL.Channel
+            //                    {
+            //                        id = channel.ID,
+            //                        access_hash = channel.AccessHash,
+            //                        photo = channel.Photo
+            //                    });
+            //                    channel.Photo = photo;
+            //                }
+            //                break;
+            //            }
+            //    }
+            //});
+
+            await Task.Delay(1);
         }
 
         private async Task GetPrevMessages(object o)
@@ -310,6 +391,24 @@ namespace Tefichat.ViewModels
                     if (mes.Message == "" && mes.Media != null)
                     {
                         // группировка
+                    }
+                }
+            });
+
+            // Получение фото к сообщениям
+            SelectedDialog.Messages.AsParallel().ForAll(async m =>
+            {
+                if (m is MessageModel mm)
+                {
+                    if (mm.Data.media != null)
+                    {
+                        if (mm.Media is MediaPhotoModel mpm)
+                        {
+                            mpm.Photos.ForAll(async (p) =>
+                            {
+                                p.Picture = await _telegramService.DownloadPhoto(p.Data);
+                            });
+                        }
                     }
                 }
             });

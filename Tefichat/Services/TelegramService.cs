@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Automation.Peers;
 using Tefichat.Models;
+using Tefichat.Models.Media;
 using Tefichat.Services.EventAgs;
 using TL;
 using WTelegram;
@@ -172,8 +173,13 @@ namespace Tefichat.Services
                         {
                             var groupMes = (MessageModel)messages.SingleOrDefault(m => m.GroupedId == msg.grouped_id);
                             if (groupMes != null)
-                            {
-                                //groupMes.Photos.Insert(0, new PictureModel(msg.ID, msg.grouped_id, null, msg.media));
+                            {                               
+                                if (groupMes.Media is MediaPhotoModel mpm)
+                                {
+                                    var photoEmpty = new PhotoModel(msg.media);
+                                    mpm?.Photos?.Insert(0,photoEmpty);
+                                }
+
                                 if (msg.message != "")
                                     groupMes.Message = msg.message;
                             }
@@ -186,13 +192,20 @@ namespace Tefichat.Services
                         if (msg.grouped_id == 0 || NoFoundGroup)
                         {
                             message = new MessageModel(msg, GetPeerInfo(msg.From ?? msg.Peer));
-                            //if (msg.media != null)
-                            //    message.Photos.Add(new PictureModel(msg.ID, msg.grouped_id, null, msg.media));
+                            if (msg.media != null)
+                            {
+                                message.Media = new MediaPhotoModel();
+                                if (message.Media is MediaPhotoModel mpm)
+                                {
+                                    var photoEmpty = new PhotoModel(msg.media);
+                                    mpm?.Photos?.Add(photoEmpty);
+                                }
+                            }
                             if (meAccount != null && msg.from_id != null && msg.from_id.ID == meAccount.ID)
                                 message.IsOriginNative = true;
                             if (msg.fwd_from != null)
                                 message.FwdFrom = new ForwardHeaderModel(GetPeerInfo(msg.fwd_from.from_id), msg.fwd_from.channel_post);
-                                
+                            
                             AddMessage(message);
                                 
                             NoFoundGroup = false;
@@ -232,6 +245,35 @@ namespace Tefichat.Services
             //});
 
             return messages;
+        }
+
+        // Загрузка фото
+        public async Task<byte[]> DownloadPhoto(MessageMedia media)
+        {
+            Photo? photo = null;
+            //Document doc = null;
+
+            switch (media)
+            {
+                case MessageMediaPhoto mmp: photo = (Photo)mmp.photo; break;
+                //case TL.MessageMediaDocument mmd: doc = (TL.Document)mmd.document; break;
+                //case TL.MessageMediaWebPage mmw: var webpage = mmw.webpage; break;
+                default: break;
+            }
+
+            byte[] bytes = null;
+            using (var memoryStream = new MemoryStream())
+            {
+                if (photo != null)
+                    await telegramClient.DownloadFileAsync(photo, memoryStream, photo.sizes[3]);
+                //else
+                //    if (doc != null)
+                //        await telegramClient.DownloadFileAsync(doc, memoryStream);
+
+                bytes = memoryStream.ToArray();
+            }
+
+            return bytes;
         }
 
         // Получение InputPeer
@@ -321,19 +363,22 @@ namespace Tefichat.Services
                             {
                                 var telmes = new MessageModel(msg);
 
-                                //if (msg.media != null)
-                                //{
-                                //    switch (msg.media)
-                                //    {
-                                //        case TL.MessageMediaPhoto mmp:
-                                //            {
-                                //                var photo = await DownloadPhoto(msg.media);
-                                //                telmes.Photos.Add(new PictureModel(msg.ID, msg.grouped_id, photo, msg.media));
-                                //                break;
-                                //            }
-                                //        default: break;
-                                //    }
-                                //}
+                                if (msg.media != null)
+                                {
+                                    switch (msg.media)
+                                    {
+                                        case MessageMediaPhoto mmp:
+                                            {
+                                                var photo = await DownloadPhoto(msg.media);
+                                                var photoModel = new PhotoModel(mmp, photo);
+                                                var mediaPhotoModel = new MediaPhotoModel();
+                                                mediaPhotoModel?.Photos?.Add(photoModel);
+                                                telmes.Media = mediaPhotoModel;
+                                                break;
+                                            }
+                                        default: break;
+                                    }
+                                }
                                 if (meAccount != null && msg.from_id != null && msg.from_id.ID == meAccount.ID)
                                     telmes.IsOriginNative = true;
 
@@ -348,6 +393,8 @@ namespace Tefichat.Services
                     case UpdateChannelMessageViews ucmv: break;
                     case UpdateChannel upch: UpdChannel(this, new ChannelEventArgs(upch)); break;
                     case UpdateChat upct: UpdChat(this, new ChatEventArgs(upct)); break;
+                    case UpdateUserEmojiStatus uues: break;
+                    case UpdateUserTyping uut: break;
                     case UpdateUserStatus uus: break;
                     case UpdateUserName uun: break;
                     case UpdateUser upus: UpdUser(this, new UserEventArgs(upus)); break;

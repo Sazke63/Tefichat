@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Tefichat.Models;
+using Tefichat.Models.Media;
 using Tefichat.Services.EventAgs;
 using TL;
 
@@ -26,6 +27,7 @@ namespace Tefichat.Services
         Task Authorization(string loginInfo);
         Task<List<DialogModel>> GetAllDialogs();
         Task<List<MessageBaseModel>> GetLastMessages();
+        Task<byte[]> DownloadPhoto(MessageMedia media);
         Task<bool> ReadMessage(DialogModel dialog, int max_id);
         Task<Message> SendMessage(DialogModel dialog, string text);
         Task<Message> SendMediaMessage(DialogModel dialog, string caption, string path);

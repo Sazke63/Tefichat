@@ -5,20 +5,14 @@
     <DataTemplate x:Key="MessagesDataTemplate">
 
         <Grid>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="6"/>
-            </Grid.ColumnDefinitions>
 
             <Border HorizontalAlignment="Left"
                     x:Name="MessageBorder"
-                    BorderBrush="#182533"
                     Background="#182531"
                     BorderThickness="0"
                     CornerRadius="18"
-                    Grid.Column="0"
                     MinWidth="100"
-                    Margin="0,2,0,2"
+                    Margin="0,2,6,2"
                     MaxWidth="435">
 
                 <Grid>
@@ -36,9 +30,9 @@
                     </Grid.RowDefinitions>
 
                     <!-- Заголовок -->
-                    <Grid Grid.Column="0" Grid.Row="0" Margin="12,9,0,0" Grid.ColumnSpan="2">
+                    <Grid Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2">
 
-                        <TextBlock x:Name="Header" Text="{Binding From.Name}" Foreground="DeepPink" FontSize="13" FontWeight="Medium"/>
+                        <TextBlock x:Name="Header" Text="{Binding From.Name}" Margin="12,9,0,6" Foreground="DeepPink" FontSize="13" FontWeight="Medium"/>
 
                         <!-- В ответ -->
                         <Button x:Name="ReplyBtn" Style="{StaticResource HideButtonHand}">
@@ -56,7 +50,7 @@
                     <Button Grid.Column="0" Grid.Row="1" x:Name="HeaderForwardBtn" 
                             Style="{StaticResource HideButtonHand}" 
                             HorizontalAlignment="Left" 
-                            Margin="12,1,0,0">
+                            Margin="12,9,0,6">
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition/>
@@ -71,46 +65,42 @@
                     </Button>
 
                     <!-- Фото -->
-                    <Grid Grid.Column="0" Grid.Row="2" x:Name="PhotoMessageGrid" Grid.ColumnSpan="2">
+                    <Grid Grid.Column="0" Grid.Row="2" x:Name="PhotoMessageGrid" Grid.ColumnSpan="2" Background="DarkMagenta" MaxHeight="554">
                         <Grid.OpacityMask>
                             <VisualBrush Visual="{Binding ElementName=ClipBorder}"/>
                         </Grid.OpacityMask>
 
-                        <Border x:Name="ClipBorder"
-                                            BorderBrush="#17212b"
-                                            Background="#17212b"
-                                            BorderThickness="0"
-                                            CornerRadius="18"/>
+                        <Border x:Name="ClipBorder" Background="#17212b"
+                                BorderThickness="0" CornerRadius="18,18,0,0"/>
 
-                        <!--ItemContainerStyle="{DynamicResource PhotoItem}"-->
-                        <ListBox ItemsSource="{Binding Photos}" Background="Transparent"
-                                 ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                                 ScrollViewer.VerticalScrollBarVisibility="Disabled"
-                                 
-                                 BorderThickness="0"
-                                 Margin="-1,-1,-1,-1"
-                                 Visibility="Collapsed">
+                            <!--ItemContainerStyle="{DynamicResource PhotoItem}"-->
+                            <ListBox ItemsSource="{Binding Media.Photos}" Background="Transparent"
+                                     ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                     ScrollViewer.VerticalScrollBarVisibility="Disabled"
+                                     ItemContainerStyle="{DynamicResource PhotoItem}"
+                                     BorderThickness="0" Margin="-1,-1,-1,-1">
 
-                            <ListBox.ItemTemplate>
-                                <DataTemplate>
-                                    <Grid>
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Orientation="Vertical" Grid.ColumnSpan="{Binding ColumnSpan}"
+                                                >
 
-                                        <Border CornerRadius="18" BorderThickness="0"/>
-                                        <Image RenderOptions.BitmapScalingMode="Fant"
-                                                Source="{Binding Picture}"
-                                                Stretch="UniformToFill"
-                                                Panel.ZIndex="0"/>
+                                            <Border CornerRadius="18" BorderThickness="0"/>
+                                                <Image Source="{Binding Picture}" Stretch="UniformToFill"
+                                                       RenderOptions.BitmapScalingMode="HighQuality"
+                                                       Panel.ZIndex="0"/>
 
-                                    </Grid>
+                                        </StackPanel>
 
-                                </DataTemplate>
-                            </ListBox.ItemTemplate>
-                            <ListBox.ItemsPanel>
-                                <ItemsPanelTemplate>
-                                    <UniformGrid IsItemsHost="True"/>
-                                </ItemsPanelTemplate>
-                            </ListBox.ItemsPanel>
-                        </ListBox>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+
+                                <ListBox.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                    <WrapPanel IsItemsHost="True" MaxWidth="{Binding ElementName=PhotoMessageGrid, Path=Width}"/>
+                                    </ItemsPanelTemplate>
+                                </ListBox.ItemsPanel>
+                            </ListBox>
 
                     </Grid>
 
@@ -120,7 +110,7 @@
                                      Foreground="WhiteSmoke"
                                      TextWrapping="Wrap" 
                                      Grid.ColumnSpan="2"
-                                     Margin="12,0,12,0"
+                                     Margin="12,6,12,0"
                                      IsEnabled="False" 
                                      Panel.ZIndex="1"
                                      Grid.Column="0"
@@ -128,7 +118,7 @@
                                      Grid.Row="3"/>
 
                     <!-- Дата и Read-->
-                    <Grid Grid.Column="1" Grid.Row="4" Margin="0,0,0,5"  HorizontalAlignment="Right" Panel.ZIndex="0">
+                    <Grid Grid.Column="1" Grid.Row="4" Margin="0,0,0,5"  HorizontalAlignment="Right">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="40"/>
@@ -138,7 +128,6 @@
                                    Foreground="LightGray"
                                    Margin="0,0,-2,0"
                                    Grid.Column="0"
-                                   Panel.ZIndex="0"
                                    FontSize="12"
                                    Opacity="0.8"
                                    x:Name="Time"/>
@@ -157,13 +146,13 @@
             <DataTrigger Binding="{Binding From}" Value="True">
                 <Setter TargetName="MessageBorder" Property="HorizontalAlignment" Value="Right" />
             </DataTrigger>
-            <DataTrigger Binding="{Binding Photos}" Value="{x:Null}">
+            <DataTrigger Binding="{Binding Media.Photos}" Value="{x:Null}">
                 <Setter TargetName="PhotoMessageGrid" Property="Visibility" Value="Collapsed"/>
             </DataTrigger>
             <DataTrigger Binding="{Binding Message}" Value="{x:Null}">
                 <Setter TargetName="MessageTxtBlock" Property="Visibility" Value="Collapsed"/>
             </DataTrigger>
-            <DataTrigger Binding="{Binding Photos}" Value="True">
+            <DataTrigger Binding="{Binding Media.Photos}" Value="True">
                 <Setter TargetName="Time" Property="Panel.ZIndex" Value="1"/>
             </DataTrigger>
             <DataTrigger Binding="{Binding From.IsChannel}" Value="{x:Null}">

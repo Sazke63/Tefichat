@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.ObjectModel;
+using Tefichat.Models.Media;
 using TL;
 
 namespace Tefichat.Models
@@ -34,7 +36,17 @@ namespace Tefichat.Models
             }
         }
 
-        public MessageMedia Media => Data.media;
+        public MessageMedia MediaT => Data.media;
+        private MediaModel media;
+        public MediaModel Media 
+        {
+            get => media;
+            set
+            {
+                media = value;
+                OnPropertyChanged(nameof(Media));
+            }
+        }
         public ForwardHeaderModel FwdFrom { get; set; }
         public override MessageBaseModel ReplyTo { get; set; }
 

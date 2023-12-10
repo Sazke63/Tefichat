@@ -13,6 +13,7 @@
                 <ResourceDictionary Source="./Views/Style/DialogCard.xaml"/>
                 <ResourceDictionary Source="./Views/Style/MessageBox.xaml"/>
                 <ResourceDictionary Source="./Views/Style/SearchBox.xaml"/>
+                <ResourceDictionary Source="./Views/Style/PhotoItem.xaml"/>
                 <ResourceDictionary Source="./Views/Style/ChatItem.xaml"/>
                 <ResourceDictionary Source="./Views/Style/ReplyBox.xaml"/>
                 <ResourceDictionary Source="./Views/Style/ReplyBoxInMessage.xaml"/>

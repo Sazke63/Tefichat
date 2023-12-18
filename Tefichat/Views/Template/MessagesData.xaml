@@ -82,23 +82,33 @@
 
                                 <ListBox.ItemTemplate>
                                     <DataTemplate>
-                                        <StackPanel Orientation="Vertical" Grid.ColumnSpan="{Binding ColumnSpan}"
-                                                >
-
+                                        <StackPanel>
+                                        <Grid>
+                                            
                                             <Border CornerRadius="18" BorderThickness="0"/>
-                                                <Image Source="{Binding Picture}" Stretch="UniformToFill"
-                                                       RenderOptions.BitmapScalingMode="HighQuality"
-                                                       Panel.ZIndex="0"/>
+                                            <TextBlock Text="{Binding Row}" Foreground="OrangeRed" Margin="20,20,0,0" FontWeight="Bold" Panel.ZIndex="2"/>
+                                            <Image Source="{Binding Picture}" Stretch="UniformToFill"
+                                                           RenderOptions.BitmapScalingMode="HighQuality"
+                                                           Panel.ZIndex="1"/>
+                                        </Grid>
 
-                                        </StackPanel>
-
-                                    </DataTemplate>
+                                    </StackPanel>
+                                </DataTemplate>
                                 </ListBox.ItemTemplate>
 
                                 <ListBox.ItemsPanel>
                                     <ItemsPanelTemplate>
-                                    <WrapPanel IsItemsHost="True" MaxWidth="{Binding ElementName=PhotoMessageGrid, Path=Width}"/>
-                                    </ItemsPanelTemplate>
+                                    <Grid ShowGridLines="False" Style="{Binding Path=Style}">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition/>
+                                            <RowDefinition/>
+                                        </Grid.RowDefinitions>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition/>
+                                            <ColumnDefinition/>
+                                        </Grid.ColumnDefinitions>
+                                    </Grid>
+                                </ItemsPanelTemplate>
                                 </ListBox.ItemsPanel>
                             </ListBox>
 

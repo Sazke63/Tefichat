@@ -4,6 +4,11 @@
     <Style TargetType="ListBoxItem" x:Key="PhotoItem">
         <Setter Property="HorizontalContentAlignment" Value="Center"/>
 
+        <Setter Property="Grid.Row" Value="{Binding Row}" />
+        <Setter Property="Grid.Column" Value="{Binding Column}" />
+        <Setter Property="Grid.ColumnSpan" Value="{Binding ColumnSpan}"/>
+        <Setter Property="Grid.RowSpan" Value="{Binding RowSpan}"/>
+
         <!--Disable Highlighting-->
         <Setter Property="IsSelected" Value="{Binding Content.IsSelected, Mode=TwoWay, RelativeSource={RelativeSource Self}}"/>
         <Setter Property="Template">

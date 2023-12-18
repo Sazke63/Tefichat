@@ -265,7 +265,7 @@ namespace Tefichat.Services
             using (var memoryStream = new MemoryStream())
             {
                 if (photo != null)
-                    await telegramClient.DownloadFileAsync(photo, memoryStream, photo.sizes[3]);
+                    await telegramClient.DownloadFileAsync(photo, memoryStream);
                 //else
                 //    if (doc != null)
                 //        await telegramClient.DownloadFileAsync(doc, memoryStream);

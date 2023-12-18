@@ -225,7 +225,7 @@ namespace Tefichat.ViewModels
             {
                 Dialogs.AsParallel().ForAll(d =>
                 {
-                    var mes = messages.SingleOrDefault(m => m.Peer.ID == d.Entity.ID);
+                    var mes = messages.FirstOrDefault(m => m.Peer.ID == d.Entity.ID);
                     if (mes != null)
                     {
                         //d.Messages.Add(mes);

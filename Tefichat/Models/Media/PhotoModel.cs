@@ -7,6 +7,7 @@ namespace Tefichat.Models.Media
     {
         public MessageMedia? Data { get; set; }
         public int ColumnSpan { get; set; } = 1;
+        public int RowSpan { get; set; } = 1;
         public int Column { get; set; }
         public int Row { get; set; }
         public Photo Photo { get; set; }

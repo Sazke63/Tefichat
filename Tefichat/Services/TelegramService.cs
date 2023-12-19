@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography.Xml;
@@ -10,6 +11,7 @@ using System.Security.RightsManagement;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Automation.Peers;
+using System.Windows.Media.Imaging;
 using Tefichat.Models;
 using Tefichat.Models.Media;
 using Tefichat.Services.EventAgs;
@@ -251,28 +253,39 @@ namespace Tefichat.Services
         public async Task<byte[]> DownloadPhoto(MessageMedia media)
         {
             Photo? photo = null;
-            //Document doc = null;
+            Document? doc = null;
 
             switch (media)
             {
                 case MessageMediaPhoto mmp: photo = (Photo)mmp.photo; break;
-                //case TL.MessageMediaDocument mmd: doc = (TL.Document)mmd.document; break;
+                case MessageMediaDocument mmd: doc = (Document)mmd.document; break;
                 //case TL.MessageMediaWebPage mmw: var webpage = mmw.webpage; break;
                 default: break;
             }
 
-            byte[] bytes = null;
+            byte[] bytes;
+            //var image = new BitmapImage();
             using (var memoryStream = new MemoryStream())
             {
                 if (photo != null)
                     await telegramClient.DownloadFileAsync(photo, memoryStream);
-                //else
-                //    if (doc != null)
-                //        await telegramClient.DownloadFileAsync(doc, memoryStream);
+                else
+                    if (doc != null)
+                        await telegramClient.DownloadFileAsync(doc, memoryStream);
 
-                bytes = memoryStream.ToArray();
+                bytes = memoryStream.ToArray();                
             }
-
+            //using (var memoryStream = new MemoryStream(bytes))
+            //{
+            //    image.BeginInit();
+            //    image.CreateOptions = BitmapCreateOptions.PreservePixelFormat;
+            //    image.CacheOption = BitmapCacheOption.OnLoad;
+            //    image.UriSource = null;
+            //    image.StreamSource = memoryStream;
+            //    image.EndInit();
+            //}
+            //image.Freeze();
+            //return image;
             return bytes;
         }
 
@@ -376,8 +389,18 @@ namespace Tefichat.Services
                                                 telmes.Media = mediaPhotoModel;
                                                 break;
                                             }
+                                        case MessageMediaDocument mmd:
+                                            {
+                                                var photo = await DownloadPhoto(msg.media);
+                                                var photoModel = new PhotoModel(mmd, photo);
+                                                var mediaPhotoModel = new MediaPhotoModel();
+                                                mediaPhotoModel?.Photos?.Add(photoModel);
+                                                telmes.Media = mediaPhotoModel;
+                                                break;
+                                            }
                                         default: break;
                                     }
+
                                 }
                                 if (meAccount != null && msg.from_id != null && msg.from_id.ID == meAccount.ID)
                                     telmes.IsOriginNative = true;

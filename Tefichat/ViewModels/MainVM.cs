@@ -288,13 +288,20 @@ namespace Tefichat.ViewModels
                             mpm.Photos.ForAll(async (p) =>
                             {
                                 p.Picture = await _telegramService.DownloadPhoto(p.Data);
+                                string Path = @"C:\Users\$dmin\Pictures\Test2\";
+                                long ID = 0;
+                                if (p.Data is MessageMediaPhoto mmp)
+                                    ID = mmp.photo.ID;
+                                if (p.Data is MessageMediaDocument mmd)
+                                    ID = mmd.document.ID;
+                                //File.WriteAllBytes(Path + ID + ".jpg", p.Picture);
                             });
 
                             //foreach (var photo in mpm.Photos)
                             //{
-                                //photo = await _telegramService.DownloadPhoto(photo.MediaData);
-                                //string Path = @"C:\Users\$dmin\Pictures\Test\";
-                                //File.WriteAllBytes(Path + photo.ID + ".jpg", photo.Picture);
+                            //    photo = await _telegramService.DownloadPhoto(photo.MediaData);
+                            //    string Path = @"C:\Users\$dmin\Pictures\Test\";
+                            //    File.WriteAllBytes(Path + photo.ID + ".jpg", photo.Picture);
                             //}
                         }
                         //m.Photos.Add(new PictureModel(m.ID, 0, await telegramService.DownloadPhoto(m.media)));

@@ -86,10 +86,13 @@
                                         <Grid>
                                             
                                             <Border CornerRadius="18" BorderThickness="0"/>
-                                            <TextBlock Text="{Binding Row}" Foreground="OrangeRed" Margin="20,20,0,0" FontWeight="Bold" Panel.ZIndex="2"/>
+                                            <TextBlock Text="{Binding Column}" Foreground="OrangeRed" Margin="20,20,0,0" FontWeight="Bold" Panel.ZIndex="2"/>
+                                            <TextBlock Text="{Binding Row}" Foreground="OrangeRed" Margin="30,20,0,0" FontWeight="Bold" Panel.ZIndex="2"/>
+                                            
                                             <Image Source="{Binding Picture}" Stretch="UniformToFill"
                                                            RenderOptions.BitmapScalingMode="HighQuality"
                                                            Panel.ZIndex="1"/>
+                                                                                       
                                         </Grid>
 
                                     </StackPanel>

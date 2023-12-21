@@ -4,6 +4,8 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Reflection.Metadata;
@@ -288,13 +290,19 @@ namespace Tefichat.ViewModels
                             mpm.Photos.ForAll(async (p) =>
                             {
                                 p.Picture = await _telegramService.DownloadPhoto(p.Data);
+                                //p.Picture2 = await _telegramService.DownloadMedia(p.Data);
                                 string Path = @"C:\Users\$dmin\Pictures\Test2\";
                                 long ID = 0;
                                 if (p.Data is MessageMediaPhoto mmp)
+                                {
                                     ID = mmp.photo.ID;
+                                    File.WriteAllBytes(Path + ID + ".jpg", p.Picture);
+                                }
                                 if (p.Data is MessageMediaDocument mmd)
+                                {
                                     ID = mmd.document.ID;
-                                //File.WriteAllBytes(Path + ID + ".jpg", p.Picture);
+                                    File.WriteAllBytes(Path + ID + ".mp4", p.Picture);
+                                }                               
                             });
 
                             //foreach (var photo in mpm.Photos)

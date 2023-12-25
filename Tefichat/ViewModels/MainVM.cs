@@ -213,6 +213,23 @@ namespace Tefichat.ViewModels
 
         public async Task DownloadData()
         {
+            var path = Directory.GetCurrentDirectory();
+            if (!Directory.Exists($"{path}\\Data"))
+            {
+                Directory.CreateDirectory($"{path}\\Data");
+                Directory.CreateDirectory($"{path}\\Data\\UserData");
+                Directory.CreateDirectory($"{path}\\Data\\UserData\\Media");
+            }
+            else if(!Directory.Exists($"{path}\\Data\\UserData"))
+            {
+                Directory.CreateDirectory($"{path}\\Data\\UserData");
+                Directory.CreateDirectory($"{path}\\Data\\UserData\\Media");
+            }
+            else if (!Directory.Exists($"{path}\\Data\\UserData\\Media"))
+            {
+                Directory.CreateDirectory($"{path}\\Data\\UserData\\Media");
+            }
+
             var dlgs = await _telegramService.GetAllDialogs();
             if (dlgs != null)
                 dlgs.ForEach(c => Dialogs.Add(c));
@@ -284,26 +301,44 @@ namespace Tefichat.ViewModels
                 {
                     if (mm.Data.media != null)
                     {
-                        if (mm.Media is MediaPhotoModel mpm)
+                        foreach(var media in mm.Media)
                         {
-                            mpm.GetGrid();
-                            mpm.Photos.ForAll(async (p) =>
+                            if (media is PhotoModel photo)
                             {
-                                p.Picture = await _telegramService.DownloadPhoto(p.Data);
-                                //p.Picture2 = await _telegramService.DownloadMedia(p.Data);
-                                string Path = @"C:\Users\$dmin\Pictures\Test2\";
-                                long ID = 0;
-                                if (p.Data is MessageMediaPhoto mmp)
-                                {
-                                    ID = mmp.photo.ID;
-                                    File.WriteAllBytes(Path + ID + ".jpg", p.Picture);
-                                }
-                                if (p.Data is MessageMediaDocument mmd)
-                                {
-                                    ID = mmd.document.ID;
-                                    File.WriteAllBytes(Path + ID + ".mp4", p.Picture);
-                                }                               
-                            });
+                                photo.Picture = await _telegramService.DownloadPhoto(photo.MediaData);
+                            }
+                            if (media is DocumentModel doc)
+                            {
+                                var document = await _telegramService.DownloadPhoto(doc.MediaData);
+                                var path = Directory.GetCurrentDirectory();
+                                path += $"\\Data\\UserData\\Media\\{doc.Data.ID}.mp4";
+                                File.WriteAllBytes($"{path}", document);
+                                doc.Picture = path;
+                            }
+                        }
+
+                        mm.GetGrid();
+
+                        //if (mm.Media is MediaPhotoModel mpm)
+                        //{
+                            //mpm.GetGrid();
+                            //mpm.Photos.ForAll(async (p) =>
+                            //{
+                            //    p.Picture = await _telegramService.DownloadPhoto(p.Data);
+                            //    //p.Picture2 = await _telegramService.DownloadMedia(p.Data);
+                            //    string Path = @"C:\Users\$dmin\Pictures\Test2\";
+                            //    long ID = 0;
+                            //    if (p.Data is MessageMediaPhoto mmp)
+                            //    {
+                            //        ID = mmp.photo.ID;
+                            //        File.WriteAllBytes(Path + ID + ".jpg", p.Picture);
+                            //    }
+                            //    if (p.Data is MessageMediaDocument mmd)
+                            //    {
+                            //        ID = mmd.document.ID;
+                            //        File.WriteAllBytes(Path + ID + ".mp4", p.Picture);
+                            //    }                               
+                            //});
 
                             //foreach (var photo in mpm.Photos)
                             //{
@@ -311,7 +346,7 @@ namespace Tefichat.ViewModels
                             //    string Path = @"C:\Users\$dmin\Pictures\Test\";
                             //    File.WriteAllBytes(Path + photo.ID + ".jpg", photo.Picture);
                             //}
-                        }
+                        //}
                         //m.Photos.Add(new PictureModel(m.ID, 0, await telegramService.DownloadPhoto(m.media)));
                     }
                 }
@@ -417,13 +452,28 @@ namespace Tefichat.ViewModels
                 {
                     if (mm.Data.media != null)
                     {
-                        if (mm.Media is MediaPhotoModel mpm)
+                        mm.Media.ForAll(async (media) =>
                         {
-                            mpm.Photos.ForAll(async (p) =>
+                            if (media is PhotoModel photo)
                             {
-                                p.Picture = await _telegramService.DownloadPhoto(p.Data);
-                            });
-                        }
+                                photo.Picture = await _telegramService.DownloadPhoto(photo.MediaData);
+                            }
+                            if (media is DocumentModel doc)
+                            {
+                                var document = await _telegramService.DownloadPhoto(doc.MediaData);
+                                var path = Directory.GetCurrentDirectory();
+                                path += $"\\Data\\UserData\\Media\\{doc.Data.ID}.mp4";
+                                File.WriteAllBytes($"{path}", document);
+                                doc.Picture = path;
+                            }
+                        });
+                        //if (mm.Media is MediaPhotoModel mpm)
+                        //{
+                        //    mpm.Photos.ForAll(async (p) =>
+                        //    {
+                        //        p.Picture = await _telegramService.DownloadPhoto(p.Data);
+                        //    });
+                        //}
                     }
                 }
             });

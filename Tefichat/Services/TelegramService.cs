@@ -175,12 +175,16 @@ namespace Tefichat.Services
                         {
                             var groupMes = (MessageModel)messages.SingleOrDefault(m => m.GroupedId == msg.grouped_id);
                             if (groupMes != null)
-                            {                               
-                                if (groupMes.Media is MediaPhotoModel mpm)
-                                {
-                                    var photoEmpty = new PhotoModel(msg.media);
-                                    mpm?.Photos?.Insert(0,photoEmpty);
-                                }
+                            {
+                                //if (groupMes.Media is MediaPhotoModel mpm)
+                                //{
+                                //var photoEmpty = new PhotoModel(msg.media);
+                                //mpm?.Photos?.Insert(0,photoEmpty);
+                                //}
+                                if (msg.media is MessageMediaPhoto mmp)
+                                    groupMes.Media.Add(new PhotoModel(msg.media));
+                                if (msg.media is MessageMediaDocument mmd)
+                                    groupMes.Media.Add(new DocumentModel(msg.media));
 
                                 if (msg.message != "")
                                     groupMes.Message = msg.message;
@@ -196,12 +200,22 @@ namespace Tefichat.Services
                             message = new MessageModel(msg, GetPeerInfo(msg.From ?? msg.Peer));
                             if (msg.media != null)
                             {
-                                message.Media = new MediaPhotoModel();
-                                if (message.Media is MediaPhotoModel mpm)
-                                {
-                                    var photoEmpty = new PhotoModel(msg.media);
-                                    mpm?.Photos?.Add(photoEmpty);
-                                }
+                                if (msg.media is MessageMediaPhoto mmp)
+                                    message.Media.Add(new PhotoModel(msg.media));
+                                if (msg.media is MessageMediaDocument mmd)
+                                    message.Media.Add(new DocumentModel(msg.media));
+                                //if (message.Media is MediaPhotoModel mpm)
+                                //{
+                                //    message.Media = new MediaPhotoModel();
+                                //    var photoEmpty = new PhotoModel(msg.media);
+                                //    mpm?.Photos?.Add(photoEmpty);
+                                //}
+                                //else if (message.Media is MediaDocumentModel mdm)
+                                //{
+                                //    message.Media = new MediaDocumentModel();
+                                //    var docEmpty = new DocumentModel(msg.media);
+                                //    mdm?.Documents?.Add(docEmpty);
+                                //}
                             }
                             if (meAccount != null && msg.from_id != null && msg.from_id.ID == meAccount.ID)
                                 message.IsOriginNative = true;
@@ -383,19 +397,24 @@ namespace Tefichat.Services
                                         case MessageMediaPhoto mmp:
                                             {
                                                 var photo = await DownloadPhoto(msg.media);
-                                                var photoModel = new PhotoModel(mmp, photo);
-                                                var mediaPhotoModel = new MediaPhotoModel();
-                                                mediaPhotoModel?.Photos?.Add(photoModel);
-                                                telmes.Media = mediaPhotoModel;
+                                                //var photoModel = new PhotoModel(mmp, photo);
+                                                //var mediaPhotoModel = new MediaPhotoModel();
+                                                //mediaPhotoModel?.Photos?.Add(photoModel);
+                                                //telmes.Media = mediaPhotoModel;
+                                                telmes.Media.Add(new PhotoModel(mmp, photo));
                                                 break;
                                             }
                                         case MessageMediaDocument mmd:
                                             {
-                                                var photo = await DownloadPhoto(msg.media);
-                                                var photoModel = new PhotoModel(mmd, photo);
-                                                var mediaPhotoModel = new MediaPhotoModel();
-                                                mediaPhotoModel?.Photos?.Add(photoModel);
-                                                telmes.Media = mediaPhotoModel;
+                                                var doc = await DownloadPhoto(msg.media);
+                                                //var photoModel = new PhotoModel(mmd, photo);
+                                                //var mediaPhotoModel = new MediaPhotoModel();
+                                                //mediaPhotoModel?.Photos?.Add(photoModel);
+                                                //telmes.Media = mediaPhotoModel;
+                                                var path = Directory.GetCurrentDirectory();
+                                                path += $"\\Data\\UserData\\Media\\{mmd.document.ID}.mp4";
+                                                File.WriteAllBytes($"{path}", doc);
+                                                telmes.Media.Add(new DocumentModel(mmd, path));
                                                 break;
                                             }
                                         default: break;
@@ -414,6 +433,7 @@ namespace Tefichat.Services
                     case UpdateReadHistoryInbox urhi: ReadHistoryInbox(this, new ReadHistoryInboxEventArgs(urhi)); break;
                     case UpdateReadHistoryOutbox urho: ReadHistoryOutbox(this, new ReadHistoryOutboxEventArgs(urho)); break;
                     case UpdateChannelMessageViews ucmv: break;
+                    case UpdateChannelMessageForwards ucmf: break;
                     case UpdateChannel upch: UpdChannel(this, new ChannelEventArgs(upch)); break;
                     case UpdateChat upct: UpdChat(this, new ChatEventArgs(upct)); break;
                     case UpdateUserEmojiStatus uues: break;

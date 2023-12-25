@@ -74,7 +74,7 @@
                                 BorderThickness="0" CornerRadius="18,18,0,0"/>
 
                             <!--ItemContainerStyle="{DynamicResource PhotoItem}"-->
-                            <ListBox ItemsSource="{Binding Media.Photos}" Background="Transparent"
+                            <ListBox ItemsSource="{Binding Media}" Background="Transparent"
                                      ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                                      ScrollViewer.VerticalScrollBarVisibility="Disabled"
                                      ItemContainerStyle="{DynamicResource PhotoItem}"
@@ -92,7 +92,9 @@
                                             <Image Source="{Binding Picture}" Stretch="UniformToFill"
                                                            RenderOptions.BitmapScalingMode="HighQuality"
                                                            Panel.ZIndex="1"/>
-                                                                                       
+
+                                            <MediaElement x:Name="VideoBox" Source="{Binding Picture}" SpeedRatio="1" LoadedBehavior="Play" Panel.ZIndex="1"/>
+
                                         </Grid>
 
                                     </StackPanel>
@@ -159,13 +161,13 @@
             <DataTrigger Binding="{Binding From}" Value="True">
                 <Setter TargetName="MessageBorder" Property="HorizontalAlignment" Value="Right" />
             </DataTrigger>
-            <DataTrigger Binding="{Binding Media.Photos}" Value="{x:Null}">
+            <DataTrigger Binding="{Binding Media}" Value="{x:Null}">
                 <Setter TargetName="PhotoMessageGrid" Property="Visibility" Value="Collapsed"/>
             </DataTrigger>
             <DataTrigger Binding="{Binding Message}" Value="{x:Null}">
                 <Setter TargetName="MessageTxtBlock" Property="Visibility" Value="Collapsed"/>
             </DataTrigger>
-            <DataTrigger Binding="{Binding Media.Photos}" Value="True">
+            <DataTrigger Binding="{Binding Media}" Value="True">
                 <Setter TargetName="Time" Property="Panel.ZIndex" Value="1"/>
             </DataTrigger>
             <DataTrigger Binding="{Binding From.IsChannel}" Value="{x:Null}">

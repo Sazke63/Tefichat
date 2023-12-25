@@ -1,18 +1,21 @@
-﻿using TL;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using TL;
 
 namespace Tefichat.Models.Media
 {
-    public class PhotoModel : MediaModel //ObservableObject
+    public class DocumentModel : MediaModel
     {
         public override MessageMedia? MediaData { get; set; }
         public override int ColumnSpan { get; set; } = 1;
         public override int RowSpan { get; set; } = 1;
         public override int Column { get; set; }
         public override int Row { get; set; }
-        public Photo Data { get; set; }
+        public Document Data { get; set; }
 
-        private byte[]? picture;
-        public byte[]? Picture
+        private string? picture;
+        public string? Picture
         {
             get => picture;
             set
@@ -21,15 +24,14 @@ namespace Tefichat.Models.Media
                 OnPropertyChanged(nameof(Picture));
             }
         }
-
-        public PhotoModel(MessageMedia mediaData, byte[]? pic = null)
+        public DocumentModel(MessageMedia mediaData, string? pic = null)
         {
             MediaData = mediaData;
             Picture = pic;
             if (Data == null)
             {
-                if (MediaData is MessageMediaPhoto p)
-                    Data = (Photo)p.photo;
+                if (MediaData is MessageMediaDocument d)
+                    Data = (Document)d.document;
             }
         }
     }

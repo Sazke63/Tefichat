@@ -66,32 +66,33 @@
 
                     <!-- Фото -->
                     <Grid Grid.Column="0" Grid.Row="2" x:Name="PhotoMessageGrid" Grid.ColumnSpan="2" Background="DarkMagenta" MaxHeight="554">
+
                         <Grid.OpacityMask>
-                            <VisualBrush Visual="{Binding ElementName=ClipBorder}"/>
+                                <VisualBrush Visual="{Binding ElementName=ClipBorder}"/>
                         </Grid.OpacityMask>
 
                         <Border x:Name="ClipBorder" Background="#17212b"
                                 BorderThickness="0" CornerRadius="18,18,0,0"/>
 
-                            <!--ItemContainerStyle="{DynamicResource PhotoItem}"-->
-                            <ListBox ItemsSource="{Binding Media}" Background="Transparent"
-                                     ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                                     ScrollViewer.VerticalScrollBarVisibility="Disabled"
-                                     ItemContainerStyle="{DynamicResource PhotoItem}"
-                                     BorderThickness="0" Margin="-1,-1,-1,-1">
+                        <!--ItemContainerStyle="{DynamicResource PhotoItem}"-->
+                        <ListBox ItemsSource="{Binding Media}" Background="Transparent"
+                                        ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                        ScrollViewer.VerticalScrollBarVisibility="Disabled"
+                                        ItemContainerStyle="{DynamicResource PhotoItem}"
+                                        BorderThickness="0" Margin="-1,-1,-1,-1">
 
-                                <ListBox.ItemTemplate>
-                                    <DataTemplate>
-                                        <StackPanel>
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel>
                                         <Grid>
-                                            
+
                                             <Border CornerRadius="18" BorderThickness="0"/>
                                             <TextBlock Text="{Binding Column}" Foreground="OrangeRed" Margin="20,20,0,0" FontWeight="Bold" Panel.ZIndex="2"/>
                                             <TextBlock Text="{Binding Row}" Foreground="OrangeRed" Margin="30,20,0,0" FontWeight="Bold" Panel.ZIndex="2"/>
-                                            
+
                                             <Image Source="{Binding Picture}" Stretch="UniformToFill"
-                                                           RenderOptions.BitmapScalingMode="HighQuality"
-                                                           Panel.ZIndex="1"/>
+                                                                RenderOptions.BitmapScalingMode="HighQuality"
+                                                                Panel.ZIndex="1"/>
 
                                             <MediaElement x:Name="VideoBox" Source="{Binding Picture}" SpeedRatio="1" LoadedBehavior="Play" Panel.ZIndex="1"/>
 
@@ -99,11 +100,11 @@
 
                                     </StackPanel>
                                 </DataTemplate>
-                                </ListBox.ItemTemplate>
+                            </ListBox.ItemTemplate>
 
-                                <ListBox.ItemsPanel>
-                                    <ItemsPanelTemplate>
-                                    <Grid ShowGridLines="False" Style="{Binding Path=Style}">
+                            <ListBox.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <Grid ShowGridLines="True" Style="{Binding Path=Style}">
                                         <Grid.RowDefinitions>
                                             <RowDefinition/>
                                             <RowDefinition/>
@@ -114,12 +115,12 @@
                                         </Grid.ColumnDefinitions>
                                     </Grid>
                                 </ItemsPanelTemplate>
-                                </ListBox.ItemsPanel>
-                            </ListBox>
-
+                            </ListBox.ItemsPanel>
+                        </ListBox>
+                            
                     </Grid>
 
-                    <!-- Сообщение -->
+                        <!-- Сообщение -->
                     <emoji:TextBlock x:Name="MessageTxtBlock" Text="{Binding Message}"
                                      VerticalAlignment="Center"
                                      Foreground="WhiteSmoke"

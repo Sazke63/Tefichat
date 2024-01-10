@@ -463,7 +463,8 @@ namespace Tefichat.ViewModels
                                 var document = await _telegramService.DownloadPhoto(doc.MediaData);
                                 var path = Directory.GetCurrentDirectory();
                                 path += $"\\Data\\UserData\\Media\\{doc.Data.ID}.mp4";
-                                File.WriteAllBytes($"{path}", document);
+                                if (!File.Exists(path))
+                                    File.WriteAllBytes($"{path}", document);
                                 doc.Picture = path;
                             }
                         });

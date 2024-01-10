@@ -91,15 +91,45 @@ namespace Tefichat.Models
 
         public void GetGrid()
         {
+            bool ultraWidth = false;
+            double divide = 0;
             switch (Media.Count)
             {
-                case 1: Media[0].ColumnSpan = 2; Media[0].RowSpan = 2; break;
-                case 2:
+                case 1:
                     {
-                        bool ultraWidth = false;
+                        //if (Media[0] is PhotoModel mediaPhoto)
+                        //{
+                        //    var photo = (Photo)mediaPhoto.Data;
+                        //    divide = (double)photo.sizes[1].Width / (double)photo.sizes[1].Height;
+                        //}
+                        //if (Media[0] is DocumentModel mediaDoc)
+                        //{
+                        //    var doc = (Document)mediaDoc.Data;
+                        //    divide = (double)doc.thumbs[1].Width / (double)doc.thumbs[1].Height;
+                        //}
+
+                        //if (divide > 1.3)
+                        //{
+                        //    ultraWidth = true;
+                        //}
+
+                        //if (ultraWidth)
+                        //{
+                        //    C = 2;
+                        //    Media[0].ColumnSpan = 2;
+                        //    //Media[0].RowSpan = 2;
+                        //}
+                        //else
+                        //{
+
+                        //}
+                        Media[0].ColumnSpan = 2; Media[0].RowSpan = 2;
+                        break;
+                    }
+                case 2:
+                    {                        
                         for (int i = 0; i < Media.Count; i++)
-                        {
-                            double divide = 0;
+                        {                            
                             if (Media[i] is PhotoModel mediaPhoto)
                             //if (Media[i].Data is MessageMediaPhoto mediaPhoto)
                             {

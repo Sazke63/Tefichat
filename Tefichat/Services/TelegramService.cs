@@ -435,6 +435,7 @@ namespace Tefichat.Services
                     case UpdateChannelMessageViews ucmv: break;
                     case UpdateChannelMessageForwards ucmf: break;
                     case UpdateChannel upch: UpdChannel(this, new ChannelEventArgs(upch)); break;
+                    case UpdateChatUserTyping ucut: break;
                     case UpdateChat upct: UpdChat(this, new ChatEventArgs(upct)); break;
                     case UpdateUserEmojiStatus uues: break;
                     case UpdateUserTyping uut: break;
